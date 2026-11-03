@@ -1,46 +1,114 @@
 @model FoodDeliveryApp.Models.ViewModels.AdminMenuItemViewModel
 @{
     ViewBag.Title = "Product Inventory & Catalog Management";
+    var totalDishes = Model.MenuItems.Count;
+    var availableDishes = Model.MenuItems.Count(i => i.IsAvailable);
+    var vegDishes = Model.MenuItems.Count(i => i.IsVeg);
+    var nonVegDishes = totalDishes - vegDishes;
 }
 
-<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+<div class="admin-header">
     <div>
-        <h2 class="font-weight-bold m-0 d-flex align-items-center gap-2">
+        <h2 class="font-weight-bold m-0 d-flex align-items-center gap-2" style="font-size: 2rem; letter-spacing: -0.5px;">
             <i class="fa-solid fa-layer-group text-warning"></i>
-            <span>Menu Items &amp; Inventory</span>
+            <span>Menu Inventory &amp; Pricing</span>
         </h2>
-        <p class="text-muted small m-0">Control kitchen item availability and modify menu prices in real time</p>
+        <p class="text-muted small m-0 mt-1">
+            Real-time catalog control &bull; Toggle kitchen availability and update prices instantly
+        </p>
     </div>
-    <a href="@Url.Action("Orders", "Admin")" class="btn btn-outline-dark rounded-pill px-3 font-weight-bold">
-        <i class="fa-solid fa-clipboard-list me-1"></i> Today's Orders
-    </a>
+    <div class="d-flex align-items-center gap-2">
+        <a href="@Url.Action("Orders", "Admin")" class="btn btn-outline-dark rounded-pill px-3 py-1 font-weight-bold shadow-sm">
+            <i class="fa-solid fa-clipboard-list me-1 text-warning"></i> Today's Orders
+        </a>
+        <a href="@Url.Action("Index", "Menu")" target="_blank" class="btn btn-warning text-white rounded-pill px-3 py-1 font-weight-bold shadow-sm">
+            <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> View Live Menu
+        </a>
+    </div>
 </div>
 
+<!-- KPI Summary Cards for Inventory -->
+<div class="admin-kpi-grid">
+    <div class="admin-kpi-card">
+        <div class="admin-kpi-icon pending">
+            <i class="fa-solid fa-utensils"></i>
+        </div>
+        <div>
+            <div class="admin-kpi-val text-dark">@totalDishes</div>
+            <div class="admin-kpi-label">Total Catalog Dishes</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">Across 6 categories</div>
+        </div>
+    </div>
+
+    <div class="admin-kpi-card">
+        <div class="admin-kpi-icon accepted">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div>
+            <div class="admin-kpi-val text-success">@availableDishes</div>
+            <div class="admin-kpi-label">Kitchen Available</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">Ready for customer order</div>
+        </div>
+    </div>
+
+    <div class="admin-kpi-card">
+        <div class="admin-kpi-icon" style="background: #ecfdf5; color: #047857;">
+            <i class="fa-solid fa-leaf"></i>
+        </div>
+        <div>
+            <div class="admin-kpi-val text-success">@vegDishes</div>
+            <div class="admin-kpi-label">Pure Vegetarian</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">FSSAI green certified</div>
+        </div>
+    </div>
+
+    <div class="admin-kpi-card">
+        <div class="admin-kpi-icon rejected">
+            <i class="fa-solid fa-drumstick-bite"></i>
+        </div>
+        <div>
+            <div class="admin-kpi-val text-danger">@nonVegDishes</div>
+            <div class="admin-kpi-label">Non-Vegetarian</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">Meat &amp; poultry specials</div>
+        </div>
+    </div>
+</div>
+
+<!-- Table Card Container -->
 <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
+    <!-- Search Bar Filter -->
+    <div class="p-3 border-bottom bg-light d-flex align-items-center justify-content-between gap-3 flex-wrap">
+        <div class="d-flex align-items-center gap-2">
+            <span class="font-weight-bold text-dark small"><i class="fa-solid fa-sliders me-1 text-warning"></i> Filter Inventory:</span>
+            <input type="text" id="inventorySearch" class="form-control form-control-sm rounded-pill px-3" placeholder="Search dish name or category..." style="max-width: 300px;" />
+        </div>
+        <span class="text-muted small">Showing <strong id="visibleCount">@totalDishes</strong> of @totalDishes dishes</span>
+    </div>
+
     <div class="table-responsive">
-        <table class="table align-middle mb-0">
-            <thead class="table-light">
+        <table class="table admin-order-table align-middle" id="inventoryTable">
+            <thead>
                 <tr>
                     <th class="ps-4">Item #</th>
                     <th>Dish Details</th>
                     <th>Category</th>
                     <th>Diet Type</th>
-                    <th>Price (&#x20B9;)</th>
-                    <th>Kitchen Availability</th>
-                    <th class="pe-4 text-center">Update Price</th>
+                    <th>Current Price</th>
+                    <th>Kitchen Stock</th>
+                    <th class="pe-4 text-center" style="min-width: 175px;">Modify Price</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.MenuItems)
                 {
-                    <tr>
-                        <td class="ps-4 font-monospace font-weight-bold">#@item.ItemId</td>
+                    <tr class="dish-row" data-name="@item.Name.ToLowerInvariant()" data-cat="@item.CategoryName.ToLowerInvariant()">
+                        <td class="ps-4 font-monospace font-weight-bold text-muted">#@item.ItemId</td>
                         <td>
                             <div class="d-flex align-items-center gap-3">
-                                <img src="@item.ImageUrl" alt="@item.Name" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;" />
+                                <img src="@item.ImageUrl" alt="@item.Name" class="rounded-3 shadow-sm" style="width: 54px; height: 54px; object-fit: cover;" onerror="this.src='/Content/images/dishes/dish-1.jpg'" />
                                 <div>
-                                    <div class="font-weight-bold text-dark">@item.Name</div>
-                                    <div class="small text-muted text-truncate" style="max-width: 280px;" title="@item.Description">
+                                    <div class="font-weight-bold text-dark fs-6">@item.Name</div>
+                                    <div class="small text-muted text-truncate" style="max-width: 300px;" title="@item.Description">
                                         @item.Description
                                     </div>
                                 </div>
@@ -53,34 +121,34 @@
                             <div class="d-flex align-items-center gap-2">
                                 <span class="diet-badge @(item.IsVeg ? "veg" : "nonveg")"></span>
                                 <span class="small font-weight-bold @(item.IsVeg ? "text-success" : "text-danger")">
-                                    @(item.IsVeg ? "Veg" : "Non-Veg")
+                                    @(item.IsVeg ? "Pure Veg" : "Non-Veg")
                                 </span>
                             </div>
                         </td>
-                        <td class="font-weight-bold fs-6">
-                            &#x20B9;@item.Price.ToString("N2")
+                        <td>
+                            <span class="font-weight-bold fs-6 text-dark">&#x20B9;@item.Price.ToString("N2")</span>
                         </td>
                         <td>
                             <!-- Availability Toggle -->
-                            @using (Html.BeginForm("ToggleAvailability", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                            @using (Html.BeginForm("ToggleAvailability", "Admin", FormMethod.Post, new { @class = "d-inline m-0" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="itemId" value="@item.ItemId" />
-                                <button type="submit" class="btn btn-sm @(item.IsAvailable ? "btn-success" : "btn-secondary") rounded-pill px-3 py-1 font-weight-bold" title="Click to toggle availability">
+                                <button type="submit" class="btn btn-sm @(item.IsAvailable ? "btn-success" : "btn-secondary") rounded-pill px-3 py-1 font-weight-bold shadow-sm" title="Click to toggle availability status">
                                     <i class="fa-solid @(item.IsAvailable ? "fa-circle-check" : "fa-circle-xmark") me-1"></i>
-                                    @(item.IsAvailable ? "Available" : "Out of Stock")
+                                    @(item.IsAvailable ? "In Stock" : "Out of Stock")
                                 </button>
                             }
                         </td>
                         <td class="pe-4 text-center">
                             <!-- Quick Price Update Form -->
-                            @using (Html.BeginForm("UpdatePrice", "Admin", FormMethod.Post, new { @class = "d-inline-flex align-items-center gap-1 justify-content-center" }))
+                            @using (Html.BeginForm("UpdatePrice", "Admin", FormMethod.Post, new { @class = "d-inline-flex align-items-center gap-1 justify-content-center m-0" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="itemId" value="@item.ItemId" />
-                                <div class="input-group input-group-sm" style="max-width: 140px;">
-                                    <span class="input-group-text">&#x20B9;</span>
-                                    <input type="number" step="any" min="1" max="50000" name="newPrice" value="@item.Price.ToString("0.##")" class="form-control" required />
+                                <div class="input-group input-group-sm" style="width: 155px;">
+                                    <span class="input-group-text bg-light">&#x20B9;</span>
+                                    <input type="number" step="any" min="1" max="50000" name="newPrice" value="@item.Price.ToString("0.##")" class="form-control font-weight-bold text-end pe-2" required />
                                     <button type="submit" class="btn btn-warning text-white" title="Save price">
                                         <i class="fa-solid fa-floppy-disk"></i>
                                     </button>
@@ -93,3 +161,25 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#inventorySearch').on('input', function () {
+                var query = $(this).val().toLowerCase().trim();
+                var visible = 0;
+                $('.dish-row').each(function () {
+                    var name = $(this).data('name') || '';
+                    var cat = $(this).data('cat') || '';
+                    if (!query || name.indexOf(query) !== -1 || cat.indexOf(query) !== -1) {
+                        $(this).show();
+                        visible++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+                $('#visibleCount').text(visible);
+            });
+        });
+    </script>
+}

@@ -1,91 +1,165 @@
 @model FoodDeliveryApp.Models.ViewModels.AdminOrdersViewModel
 @{
-    ViewBag.Title = "Today's Orders Management Dashboard";
+    ViewBag.Title = "Kitchen Orders Management";
     string activeTab = Model.ActiveTab.ToLowerInvariant();
+    decimal todayRevenue = Model.AcceptedOrders.Sum(o => o.TotalAmount);
 }
 
+<!-- Top Header with Live Refresh Indicator -->
 <div class="admin-header">
     <div>
-        <h2 class="font-weight-bold m-0 d-flex align-items-center gap-2">
+        <h2 class="font-weight-bold m-0 d-flex align-items-center gap-2" style="font-size: 2rem; letter-spacing: -0.5px;">
             <i class="fa-solid fa-clipboard-list text-warning"></i>
-            <span>Today's Orders</span>
+            <span>Kitchen Order Management</span>
         </h2>
-        <p class="text-muted small m-0">Live order queue for @DateTime.Today.ToString("dddd, dd MMMM yyyy")</p>
+        <p class="text-muted small m-0 mt-1">
+            Live order queue for <strong>@DateTime.Today.ToString("dddd, dd MMMM yyyy")</strong> &bull; Local Kitchen Hub Dispatch
+        </p>
     </div>
 
-    <!-- 60-Second Live Auto-Refresh Indicator with Visual Bar -->
+    <!-- Live Polling Telemetry & Refresh Actions -->
     <div class="d-flex align-items-center gap-3">
         <div class="d-flex flex-column align-items-end">
             <div class="admin-ticker-badge" id="tickerBadge" title="Automatic live polling active">
                 <span class="admin-ticker-dot"></span>
-                <span>Refreshes in <strong id="refreshCountdown">@Model.AutoRefreshSeconds</strong>s</span>
+                <span>Polling &bull; <strong id="refreshCountdown">@Model.AutoRefreshSeconds</strong>s</span>
             </div>
-            <div class="progress mt-1 w-100" style="height: 4px; border-radius: 2px; background: #e2e8f0;">
-                <div id="refreshProgressBar" class="progress-bar bg-warning" role="progressbar" style="width: 100%; transition: width 1s linear;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress mt-1" style="height: 4px; width: 120px; border-radius: 2px; background: #e2e8f0;">
+                <div id="refreshProgressBar" class="progress-bar bg-warning" role="progressbar" style="width: 100%; transition: width 1s linear;"></div>
             </div>
         </div>
-        <a href="@Url.Action("Orders", "Admin", new { tab = activeTab })" class="btn btn-sm btn-outline-secondary rounded-pill px-3" title="Immediate poll">
-            <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh Now
+
+        <a href="@Url.Action("Orders", "Admin", new { tab = activeTab })" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 font-weight-bold shadow-sm" title="Refresh queue immediately">
+            <i class="fa-solid fa-arrows-rotate me-1"></i> Refresh
+        </a>
+
+        <a href="@Url.Action("MenuItems", "Admin")" class="btn btn-sm btn-warning text-white rounded-pill px-3 py-1 font-weight-bold shadow-sm">
+            <i class="fa-solid fa-layer-group me-1"></i> Inventory
         </a>
     </div>
-    <noscript>
-        <meta http-equiv="refresh" content="@Model.AutoRefreshSeconds;url=@Url.Action("Orders", "Admin", new { tab = activeTab })" />
-    </noscript>
 </div>
 
+<!-- Auto-Rejection Notification -->
 @if (Model.AutoRejectedCount > 0)
 {
-    <div class="alert alert-warning alert-dismissible fade show shadow-sm rounded-3 py-2 small" role="alert">
-        <i class="fa-solid fa-triangle-exclamation me-2"></i>
-        <strong>Auto-Rejection Notice:</strong> @Model.AutoRejectedCount pending order(s) exceeded the 5-minute response limit and were automatically transitioned to <strong>Rejected</strong>.
+    <div class="alert alert-warning alert-dismissible fade show shadow-sm rounded-4 py-2 px-3 small d-flex align-items-center justify-content-between mb-4" role="alert">
+        <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-warning fs-5"></i>
+            <span>
+                <strong>Automatic Rejection Notice:</strong> @Model.AutoRejectedCount pending order(s) exceeded the mandatory 5-minute kitchen response limit and were automatically transitioned to <strong>Rejected</strong>.
+            </span>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-<!-- Tab Navigation -->
+<!-- Executive KPI Summary Cards -->
+<div class="admin-kpi-grid">
+    <!-- 1. Pending Review -->
+    <div class="admin-kpi-card">
+        <div class="admin-kpi-icon pending">
+            <i class="fa-solid fa-hourglass-half"></i>
+        </div>
+        <div>
+            <div class="admin-kpi-val text-warning">@Model.PendingOrders.Count</div>
+            <div class="admin-kpi-label">Pending Orders</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">Requires kitchen review</div>
+        </div>
+    </div>
+
+    <!-- 2. Accepted Today -->
+    <div class="admin-kpi-card">
+        <div class="admin-kpi-icon accepted">
+            <i class="fa-solid fa-fire-burner"></i>
+        </div>
+        <div>
+            <div class="admin-kpi-val text-success">@Model.AcceptedOrders.Count</div>
+            <div class="admin-kpi-label">Accepted Today</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">Cooking &amp; Dispatched</div>
+        </div>
+    </div>
+
+    <!-- 3. Rejected / Expired -->
+    <div class="admin-kpi-card">
+        <div class="admin-kpi-icon rejected">
+            <i class="fa-solid fa-ban"></i>
+        </div>
+        <div>
+            <div class="admin-kpi-val text-danger">@Model.RejectedOrders.Count</div>
+            <div class="admin-kpi-label">Declined / Expired</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">5-min timeout or manual</div>
+        </div>
+    </div>
+
+    <!-- 4. Today's Gross Sales -->
+    <div class="admin-kpi-card">
+        <div class="admin-kpi-icon revenue">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+        </div>
+        <div>
+            <div class="admin-kpi-val text-dark">&#x20B9;@todayRevenue.ToString("N0")</div>
+            <div class="admin-kpi-label">Today's Sales</div>
+            <div class="text-muted small" style="font-size: 0.75rem;">From fulfilled orders</div>
+        </div>
+    </div>
+</div>
+
+<!-- Segmented Tab Navigation -->
 <div class="admin-tabs">
     <a href="@Url.Action("Orders", "Admin", new { tab = "pending" })"
        class="admin-tab-btn @(activeTab == "pending" ? "active" : "")">
         <i class="fa-solid fa-hourglass-half"></i>
-        <span>Pending Orders</span>
-        <span class="badge @(activeTab == "pending" ? "bg-white text-dark" : "bg-warning text-dark")">@Model.PendingOrders.Count</span>
+        <span>Pending Review</span>
+        <span class="admin-tab-badge pending">@Model.PendingOrders.Count</span>
     </a>
     <a href="@Url.Action("Orders", "Admin", new { tab = "accepted" })"
        class="admin-tab-btn @(activeTab == "accepted" ? "active" : "")">
         <i class="fa-solid fa-circle-check"></i>
         <span>Accepted Orders</span>
-        <span class="badge @(activeTab == "accepted" ? "bg-white text-success" : "bg-success text-white")">@Model.AcceptedOrders.Count</span>
+        <span class="admin-tab-badge accepted">@Model.AcceptedOrders.Count</span>
     </a>
     <a href="@Url.Action("Orders", "Admin", new { tab = "rejected" })"
        class="admin-tab-btn @(activeTab == "rejected" ? "active" : "")">
         <i class="fa-solid fa-circle-xmark"></i>
         <span>Rejected Orders</span>
-        <span class="badge @(activeTab == "rejected" ? "bg-white text-danger" : "bg-danger text-white")">@Model.RejectedOrders.Count</span>
+        <span class="admin-tab-badge rejected">@Model.RejectedOrders.Count</span>
     </a>
 </div>
 
-<!-- Tab Content Container -->
+<!-- Tab Content Container Card -->
 <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
     @if (activeTab == "pending")
     {
-        <!-- 1. Pending Orders Tab (Page 10) -->
+        <!-- Pending Orders Tab -->
         if (!Model.PendingOrders.Any())
         {
-            <div class="text-center py-5">
-                <i class="fa-solid fa-check-double fs-1 text-muted opacity-50 mb-3"></i>
-                <h5 class="text-secondary">No pending orders waiting for review</h5>
-                <p class="text-muted small">All today's orders have been processed or none have been submitted yet.</p>
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon" style="background: #fef3c7; color: #d97706;">
+                    <i class="fa-solid fa-check-double"></i>
+                </div>
+                <h4 class="admin-empty-title">All Caught Up! No Pending Orders</h4>
+                <p class="admin-empty-desc">
+                    All customer orders placed today have been processed or none have arrived yet. New incoming orders will appear here automatically with live countdowns.
+                </p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="@Url.Action("Orders", "Admin", new { tab = "accepted" })" class="btn btn-outline-dark rounded-pill px-4 font-weight-bold">
+                        View Accepted Orders (@Model.AcceptedOrders.Count)
+                    </a>
+                    <a href="@Url.Action("MenuItems", "Admin")" class="btn btn-warning text-white rounded-pill px-4 font-weight-bold">
+                        Manage Menu Inventory &rarr;
+                    </a>
+                </div>
             </div>
         }
         else
         {
             <div class="table-responsive">
-                <table class="table admin-order-table align-middle mb-0">
+                <table class="table admin-order-table align-middle">
                     <thead>
                         <tr>
                             <th class="ps-4">Order #</th>
                             <th>Customer Details</th>
-                            <th>Delivery Destination</th>
+                            <th>Delivery Address</th>
                             <th>Dishes Ordered</th>
                             <th>Total (&#x20B9;)</th>
                             <th>Placed At</th>
@@ -98,56 +172,58 @@
                             var timeAgoMinutes = (int)(DateTime.Now - ord.PlacedAt).TotalMinutes;
                             var isNearTimeout = timeAgoMinutes >= 4;
 
-                            <tr class="@(isNearTimeout ? "table-warning" : "")">
-                                <td class="ps-4 font-monospace font-weight-bold">
-                                    #@ord.OrderId
+                            <tr class="@(isNearTimeout ? "expiring-row" : "")">
+                                <td class="ps-4">
+                                    <div class="font-monospace font-weight-bold text-dark">#@ord.OrderId</div>
                                     @if (isNearTimeout)
                                     {
-                                        <div class="badge bg-danger small text-white mt-1 d-block">Expiring Soon!</div>
+                                        <span class="badge bg-danger text-white small mt-1 animate__animated animate__pulse animate__infinite">
+                                            <i class="fa-solid fa-clock me-1"></i> Expiring Soon!
+                                        </span>
                                     }
                                 </td>
                                 <td>
                                     <div class="font-weight-bold text-dark">@ord.CustomerName</div>
-                                    <div class="small text-muted"><i class="fa-solid fa-envelope me-1"></i>@ord.CustomerEmail</div>
                                     <div class="small text-muted"><i class="fa-solid fa-phone me-1"></i>+91 @ord.ContactPhone</div>
+                                    <div class="small text-muted"><i class="fa-solid fa-envelope me-1"></i>@ord.CustomerEmail</div>
                                 </td>
-                                <td style="max-width: 220px;">
+                                <td style="max-width: 240px;">
                                     <div class="small text-muted text-break">
                                         <i class="fa-solid fa-location-dot me-1 text-secondary"></i> @ord.DeliveryAddress
                                     </div>
                                     <span class="badge bg-light text-dark border small mt-1">@ord.PaymentMethod</span>
                                 </td>
-                                <td style="max-width: 320px;">
-                                    <div class="small font-weight-bold">@ord.ItemsSummary</div>
+                                <td style="max-width: 300px;">
+                                    <div class="small font-weight-bold text-dark">@ord.ItemsSummary</div>
                                 </td>
-                                <td class="font-weight-bold fs-6 text-dark">
-                                    &#x20B9;@ord.TotalAmount.ToString("N2")
+                                <td>
+                                    <span class="font-weight-bold fs-6 text-dark">&#x20B9;@ord.TotalAmount.ToString("N2")</span>
                                 </td>
-                                <td class="small text-muted">
-                                    <div>@ord.PlacedAt.ToString("hh:mm:ss tt")</div>
-                                    <div class="badge bg-light text-secondary border small">@timeAgoMinutes min ago</div>
+                                <td>
+                                    <div class="small font-weight-bold">@ord.PlacedAt.ToString("hh:mm tt")</div>
+                                    <span class="badge bg-light text-muted border small">@timeAgoMinutes min ago</span>
                                 </td>
                                 <td class="text-center pe-4">
                                     <div class="d-flex justify-content-center gap-2">
                                         <!-- Accept Action -->
-                                        @using (Html.BeginForm("AcceptOrder", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                                        @using (Html.BeginForm("AcceptOrder", "Admin", FormMethod.Post, new { @class = "d-inline m-0" }))
                                         {
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="orderId" value="@ord.OrderId" />
                                             <input type="hidden" name="returnTab" value="pending" />
-                                            <button type="submit" class="btn-admin-accept" title="Accept and start preparation">
-                                                <i class="fa-solid fa-check me-1"></i> Accept
+                                            <button type="submit" class="btn-admin-accept" title="Accept order and send to kitchen">
+                                                <i class="fa-solid fa-check"></i> Accept
                                             </button>
                                         }
 
                                         <!-- Reject Action -->
-                                        @using (Html.BeginForm("RejectOrder", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                                        @using (Html.BeginForm("RejectOrder", "Admin", FormMethod.Post, new { @class = "d-inline m-0" }))
                                         {
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="orderId" value="@ord.OrderId" />
                                             <input type="hidden" name="returnTab" value="pending" />
                                             <button type="submit" class="btn-admin-reject" onclick="return confirm('Are you sure you want to reject Order #@ord.OrderId?');" title="Reject this order">
-                                                <i class="fa-solid fa-xmark me-1"></i> Reject
+                                                <i class="fa-solid fa-xmark"></i> Reject
                                             </button>
                                         }
                                     </div>
@@ -161,19 +237,26 @@
     }
     else if (activeTab == "accepted")
     {
-        <!-- 2. Accepted Orders Tab (Page 11) -->
+        <!-- Accepted Orders Tab -->
         if (!Model.AcceptedOrders.Any())
         {
-            <div class="text-center py-5">
-                <i class="fa-solid fa-clipboard-check fs-1 text-muted opacity-50 mb-3"></i>
-                <h5 class="text-secondary">No orders accepted yet today</h5>
-                <p class="text-muted small">Accepted orders currently in preparation will appear here.</p>
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon" style="background: #d1fae5; color: #059669;">
+                    <i class="fa-solid fa-fire-burner"></i>
+                </div>
+                <h4 class="admin-empty-title">No Orders Accepted Yet Today</h4>
+                <p class="admin-empty-desc">
+                    Orders confirmed by kitchen staff will appear here with timestamps and prep dispatch tracking.
+                </p>
+                <a href="@Url.Action("Orders", "Admin", new { tab = "pending" })" class="btn btn-warning text-white rounded-pill px-4 font-weight-bold">
+                    Check Pending Orders
+                </a>
             </div>
         }
         else
         {
             <div class="table-responsive">
-                <table class="table admin-order-table align-middle mb-0">
+                <table class="table admin-order-table align-middle">
                     <thead>
                         <tr>
                             <th class="ps-4">Order #</th>
@@ -183,26 +266,27 @@
                             <th>Total (&#x20B9;)</th>
                             <th>Placed At</th>
                             <th>Accepted At</th>
-                            <th class="pe-4">Status</th>
+                            <th class="pe-4">Current Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var ord in Model.AcceptedOrders)
                         {
                             <tr>
-                                <td class="ps-4 font-monospace font-weight-bold">#@ord.OrderId</td>
+                                <td class="ps-4 font-monospace font-weight-bold text-dark">#@ord.OrderId</td>
                                 <td>
                                     <div class="font-weight-bold text-dark">@ord.CustomerName</div>
                                     <div class="small text-muted"><i class="fa-solid fa-phone me-1"></i>+91 @ord.ContactPhone</div>
                                 </td>
                                 <td style="max-width: 240px;">
                                     <div class="small text-muted text-break">@ord.DeliveryAddress</div>
+                                    <span class="badge bg-light text-dark border small mt-1">@ord.PaymentMethod</span>
                                 </td>
-                                <td style="max-width: 320px;">
-                                    <div class="small font-weight-bold">@ord.ItemsSummary</div>
+                                <td style="max-width: 300px;">
+                                    <div class="small font-weight-bold text-dark">@ord.ItemsSummary</div>
                                 </td>
-                                <td class="font-weight-bold fs-6">
-                                    &#x20B9;@ord.TotalAmount.ToString("N2")
+                                <td>
+                                    <span class="font-weight-bold fs-6 text-dark">&#x20B9;@ord.TotalAmount.ToString("N2")</span>
                                 </td>
                                 <td class="small text-muted">@ord.PlacedAt.ToString("hh:mm tt")</td>
                                 <td class="small text-muted">
@@ -210,7 +294,7 @@
                                 </td>
                                 <td class="pe-4">
                                     <span class="badge-status accepted">
-                                        <i class="fa-solid fa-kitchen-set me-1"></i> In Prep / Accepted
+                                        <i class="fa-solid fa-kitchen-set me-1"></i> In Kitchen Prep
                                     </span>
                                 </td>
                             </tr>
@@ -222,19 +306,23 @@
     }
     else if (activeTab == "rejected")
     {
-        <!-- 3. Rejected Orders Tab (Page 12) -->
+        <!-- Rejected Orders Tab -->
         if (!Model.RejectedOrders.Any())
         {
-            <div class="text-center py-5">
-                <i class="fa-solid fa-shield-cat fs-1 text-muted opacity-50 mb-3"></i>
-                <h5 class="text-secondary">No rejected orders for today</h5>
-                <p class="text-muted small">Orders rejected manually or automatically timed out will appear here.</p>
+            <div class="admin-empty-state">
+                <div class="admin-empty-icon" style="background: #fee2e2; color: #dc2626;">
+                    <i class="fa-solid fa-ban"></i>
+                </div>
+                <h4 class="admin-empty-title">Zero Rejected Orders Today</h4>
+                <p class="admin-empty-desc">
+                    Great job! No orders have been declined or timed out today.
+                </p>
             </div>
         }
         else
         {
             <div class="table-responsive">
-                <table class="table admin-order-table align-middle mb-0">
+                <table class="table admin-order-table align-middle">
                     <thead>
                         <tr>
                             <th class="ps-4">Order #</th>
@@ -244,7 +332,7 @@
                             <th>Total (&#x20B9;)</th>
                             <th>Placed At</th>
                             <th>Rejected At</th>
-                            <th class="pe-4">Status</th>
+                            <th class="pe-4">Rejection Type</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -259,11 +347,11 @@
                                 <td style="max-width: 240px;">
                                     <div class="small text-muted text-break">@ord.DeliveryAddress</div>
                                 </td>
-                                <td style="max-width: 320px;">
+                                <td style="max-width: 300px;">
                                     <div class="small text-muted">@ord.ItemsSummary</div>
                                 </td>
-                                <td class="font-weight-bold fs-6 text-muted">
-                                    &#x20B9;@ord.TotalAmount.ToString("N2")
+                                <td>
+                                    <span class="font-weight-bold fs-6 text-muted">&#x20B9;@ord.TotalAmount.ToString("N2")</span>
                                 </td>
                                 <td class="small text-muted">@ord.PlacedAt.ToString("hh:mm tt")</td>
                                 <td class="small text-muted">
@@ -271,7 +359,7 @@
                                 </td>
                                 <td class="pe-4">
                                     <span class="badge-status rejected">
-                                        <i class="fa-solid fa-ban me-1"></i> Rejected
+                                        <i class="fa-solid fa-clock-rotate-left me-1"></i> Rejected / Timeout
                                     </span>
                                 </td>
                             </tr>
@@ -303,7 +391,6 @@
                 }
                 if (secondsRemaining <= 0) {
                     clearInterval(interval);
-                    // Seamless auto-refresh preserving the active tab selection
                     window.location.href = '@Url.Action("Orders", "Admin")?tab=' + encodeURIComponent(activeTab);
                 }
             }, 1000);
