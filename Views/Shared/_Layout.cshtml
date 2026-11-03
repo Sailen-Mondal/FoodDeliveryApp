@@ -1,39 +1,372 @@
-﻿<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - Foodly Kitchen</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-        <div class="container">
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                </ul>
+    <!-- Foodly Sticky Top Navbar -->
+    <nav class="foodly-navbar">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="@Url.Action("Index", "Home")" class="foodly-brand">
+                <div class="foodly-brand-icon">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <span>Food<span class="accent">ly</span></span>
+            </a>
+
+            <div class="d-none d-md-flex align-items-center gap-2">
+                <a href="@Url.Action("Index", "Home")" class="foodly-nav-link">Home</a>
+                <a href="@Url.Action("Index", "Menu")" class="foodly-nav-link">Menu Catalog</a>
+                @if (Request.IsAuthenticated && !User.IsInRole("Admin"))
+                {
+                    <a href="@Url.Action("History", "Order")" class="foodly-nav-link">My Orders</a>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <a href="@Url.Action("Orders", "Admin")" class="foodly-nav-link">
+                        <i class="fa-solid fa-bell me-1 text-warning"></i> Today's Orders
+                    </a>
+                    <a href="@Url.Action("MenuItems", "Admin")" class="foodly-nav-link">
+                        <i class="fa-solid fa-layer-group me-1"></i> Inventory
+                    </a>
+                }
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <!-- Cart Button (Customer flow) -->
+                @if (!User.IsInRole("Admin"))
+                {
+                    <button type="button" class="foodly-cart-btn" id="openCartDrawerBtn" title="View Cart">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="d-none d-sm-inline">Cart</span>
+                        <span class="foodly-cart-badge" id="cartCountBadge">0</span>
+                    </button>
+                }
+
+                <!-- Account / Authentication -->
+                @if (Request.IsAuthenticated)
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle rounded-pill px-3 py-1 d-flex align-items-center gap-2" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-circle-user text-warning fs-5"></i>
+                            <span class="d-none d-sm-inline font-weight-bold">@User.Identity.Name</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenuBtn">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li><a class="dropdown-item" href="@Url.Action("Orders", "Admin")"><i class="fa-solid fa-clipboard-list me-2"></i> Orders Dashboard</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("MenuItems", "Admin")"><i class="fa-solid fa-utensils me-2"></i> Menu Items</a></li>
+                            }
+                            else
+                            {
+                                <li><a class="dropdown-item" href="@Url.Action("History", "Order")"><i class="fa-solid fa-clock-rotate-left me-2"></i> My Order History</a></li>
+                            }
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "d-inline m-0 p-0" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="dropdown-item text-danger d-flex align-items-center">
+                                        <i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out
+                                    </button>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="@Url.Action("Login", "Account")" class="btn btn-sm btn-outline-dark rounded-pill px-3">Sign In</a>
+                        <a href="@Url.Action("Register", "Account")" class="btn btn-sm btn-warning text-white rounded-pill px-3 d-none d-sm-inline-block">Register</a>
+                        <a href="@Url.Action("AdminLogin", "Account")" class="btn btn-sm btn-light border rounded-pill px-2" title="Admin Portal">
+                            <i class="fa-solid fa-lock text-secondary"></i>
+                        </a>
+                    </div>
+                }
             </div>
         </div>
     </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+
+    <!-- Global Flash Alerts -->
+    <div class="container mt-3">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3" role="alert">
+                <i class="fa-solid fa-circle-check me-2"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm rounded-3" role="alert">
+                <i class="fa-solid fa-circle-exclamation me-2"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
     </div>
+
+    <!-- Main Content Body -->
+    <main class="container my-4">
+        @RenderBody()
+    </main>
+
+    <!-- Interactive Cart Drawer (<dialog>) -->
+    <dialog id="cartDrawer" aria-label="Shopping Cart">
+        <div class="drawer-header">
+            <h5>
+                <i class="fa-solid fa-bag-shopping text-warning"></i>
+                <span>My Food Basket</span>
+            </h5>
+            <button type="button" class="drawer-close-btn" id="closeCartDrawerBtn" aria-label="Close cart">&times;</button>
+        </div>
+        <div class="drawer-body" id="cartDrawerBody">
+            <div class="text-center py-5 text-muted" id="cartEmptyPlaceholder">
+                <i class="fa-solid fa-utensils fs-1 mb-3 text-secondary opacity-50"></i>
+                <h6>Your basket is hungry!</h6>
+                <p class="small">Add delicious dishes from our menu to begin your feast.</p>
+                <a href="@Url.Action("Index", "Menu")" class="btn btn-sm btn-outline-warning rounded-pill px-3 mt-2" onclick="FoodlyCart.close()">Browse Menu</a>
+            </div>
+            <div id="cartItemList" class="d-none"></div>
+        </div>
+        <div class="drawer-footer d-none" id="cartDrawerFooter">
+            <div class="drawer-bill-row">
+                <span>Items Subtotal</span>
+                <span id="cartDrawerSubtotal">&#x20B9;0.00</span>
+            </div>
+            <div class="drawer-bill-row">
+                <span>Delivery Charge</span>
+                <span id="cartDrawerDeliveryFee">&#x20B9;0.00</span>
+            </div>
+            <div class="drawer-bill-total">
+                <span>To Pay</span>
+                <span id="cartDrawerTotal" class="text-warning">&#x20B9;0.00</span>
+            </div>
+            <a href="@Url.Action("Checkout", "Order")" class="btn-foodly-checkout">
+                Proceed to Checkout <i class="fa-solid fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </dialog>
+
+    <!-- Footer -->
+    <footer class="foodly-footer">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="foodly-brand mb-2">
+                        <div class="foodly-brand-icon">
+                            <i class="fa-solid fa-utensils"></i>
+                        </div>
+                        <span>Food<span class="accent">ly</span> Kitchen</span>
+                    </div>
+                    <p class="text-muted small">
+                        Serving mouthwatering Indian biryanis, gravies, hand-crafted pizzas, and sizzling street delicacies straight to your doorstep across India.
+                    </p>
+                    <div class="d-flex gap-3 text-secondary fs-5 mt-2">
+                        <a href="#" class="text-secondary"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-secondary"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="text-secondary"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h6>Quick Links</h6>
+                    <a href="@Url.Action("Index", "Home")" class="foodly-footer-link">Home</a>
+                    <a href="@Url.Action("Index", "Menu")" class="foodly-footer-link">Full Menu</a>
+                    <a href="@Url.Action("About", "Home")" class="foodly-footer-link">About Us</a>
+                    <a href="@Url.Action("Contact", "Home")" class="foodly-footer-link">Contact Support</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6>Kitchen Hubs</h6>
+                    <span class="foodly-footer-link"><i class="fa-solid fa-location-dot me-2 text-warning"></i> Bengaluru (Indiranagar, Bellandur)</span>
+                    <span class="foodly-footer-link"><i class="fa-solid fa-location-dot me-2 text-warning"></i> Mumbai (Bandra, Powai)</span>
+                    <span class="foodly-footer-link"><i class="fa-solid fa-location-dot me-2 text-warning"></i> Delhi NCR (Connaught Place, Noida)</span>
+                    <span class="foodly-footer-link"><i class="fa-solid fa-location-dot me-2 text-warning"></i> Pune (Kothrud, Hinjewadi)</span>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6>Support Desk</h6>
+                    <p class="small text-muted mb-1"><i class="fa-solid fa-phone me-2 text-warning"></i> +91 98765 43210</p>
+                    <p class="small text-muted mb-1"><i class="fa-solid fa-envelope me-2 text-warning"></i> support@foodly.in</p>
+                    <p class="small text-muted"><i class="fa-solid fa-clock me-2 text-warning"></i> 10:00 AM - 11:30 PM (Daily)</p>
+                </div>
+            </div>
+            <div class="pt-3 border-top text-center text-muted small">
+                &copy; 2026 Foodly Kitchen. Crafted with passion by Sailen Mondal. All rights reserved.
+            </div>
+        </div>
+    </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <!-- Cart Drawer Script -->
+    <script>
+        (function () {
+            var cartDialog = document.getElementById('cartDrawer');
+            var openBtn = document.getElementById('openCartDrawerBtn');
+            var closeBtn = document.getElementById('closeCartDrawerBtn');
+
+            function openDrawer() {
+                if (cartDialog && typeof cartDialog.showModal === 'function') {
+                    if (!cartDialog.open) {
+                        cartDialog.showModal();
+                        refreshDrawer();
+                    }
+                }
+            }
+
+            function closeDrawer() {
+                if (cartDialog && cartDialog.open) {
+                    cartDialog.close();
+                }
+            }
+
+            if (openBtn) openBtn.addEventListener('click', openDrawer);
+            if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+
+            // Close dialog if backdrop is clicked
+            if (cartDialog) {
+                cartDialog.addEventListener('click', function (e) {
+                    var rect = cartDialog.getBoundingClientRect();
+                    var isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+                        rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+                    if (!isInDialog) {
+                        closeDrawer();
+                    }
+                });
+            }
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function renderCartItems(data) {
+                var badge = document.getElementById('cartCountBadge');
+                if (badge) badge.textContent = data.itemCount || 0;
+
+                var emptyPlaceholder = document.getElementById('cartEmptyPlaceholder');
+                var itemList = document.getElementById('cartItemList');
+                var footer = document.getElementById('cartDrawerFooter');
+
+                if (!data.items || data.items.length === 0) {
+                    if (emptyPlaceholder) emptyPlaceholder.classList.remove('d-none');
+                    if (itemList) itemList.classList.add('d-none');
+                    if (footer) footer.classList.add('d-none');
+                    return;
+                }
+
+                if (emptyPlaceholder) emptyPlaceholder.classList.add('d-none');
+                if (itemList) {
+                    itemList.classList.remove('d-none');
+                    var html = '';
+                    data.items.forEach(function (item) {
+                        var vegClass = item.IsVeg ? 'veg' : 'nonveg';
+                        var safeName = escapeHtml(item.Name);
+                        var safeImg = escapeHtml(item.ImageUrl);
+                        html += '<div class="drawer-item">' +
+                            '<img src="' + safeImg + '" class="drawer-item-img" alt="' + safeName + '" />' +
+                            '<div class="drawer-item-info">' +
+                            '<div class="d-flex align-items-center gap-1 mb-1">' +
+                            '<span class="diet-badge ' + vegClass + '"></span>' +
+                            '<span class="drawer-item-title">' + safeName + '</span>' +
+                            '</div>' +
+                            '<div class="drawer-item-price">&#x20B9;' + Number(item.Price).toFixed(2) + '</div>' +
+                            '</div>' +
+                            '<div class="drawer-qty-control">' +
+                            '<button type="button" class="drawer-qty-btn" onclick="FoodlyCart.update(' + item.ItemId + ', -1)">-</button>' +
+                            '<span class="drawer-qty-val">' + item.Quantity + '</span>' +
+                            '<button type="button" class="drawer-qty-btn" onclick="FoodlyCart.update(' + item.ItemId + ', 1)">+</button>' +
+                            '</div>' +
+                            '</div>';
+                    });
+                    itemList.innerHTML = html;
+                }
+
+                if (footer) {
+                    footer.classList.remove('d-none');
+                    var subtotalEl = document.getElementById('cartDrawerSubtotal');
+                    var feeEl = document.getElementById('cartDrawerDeliveryFee');
+                    var totalEl = document.getElementById('cartDrawerTotal');
+
+                    if (subtotalEl) subtotalEl.innerHTML = '&#x20B9;' + Number(data.subTotal).toFixed(2);
+                    if (feeEl) {
+                        feeEl.innerHTML = data.deliveryFee > 0 ? '&#x20B9;' + Number(data.deliveryFee).toFixed(2) : '<span class="text-success font-weight-bold">FREE</span>';
+                    }
+                    if (totalEl) totalEl.innerHTML = '&#x20B9;' + Number(data.total).toFixed(2);
+                }
+            }
+
+            function refreshDrawer() {
+                $.ajax({
+                    url: '@Url.Action("GetSummary", "Cart")',
+                    type: 'GET',
+                    success: function (res) {
+                        if (res && res.success) {
+                            renderCartItems(res);
+                        }
+                    }
+                });
+            }
+
+            window.FoodlyCart = {
+                open: openDrawer,
+                close: closeDrawer,
+                refresh: refreshDrawer,
+                add: function (itemId, quantity) {
+                    $.ajax({
+                        url: '@Url.Action("Add", "Cart")',
+                        type: 'POST',
+                        data: { itemId: itemId, quantity: quantity || 1 },
+                        success: function (res) {
+                            if (res && res.success) {
+                                renderCartItems(res);
+                                openDrawer();
+                            } else {
+                                alert(res.message || 'Unable to add dish to cart.');
+                            }
+                        },
+                        error: function () {
+                            alert('An error occurred while adding to cart.');
+                        }
+                    });
+                },
+                update: function (itemId, delta) {
+                    $.ajax({
+                        url: '@Url.Action("UpdateQuantity", "Cart")',
+                        type: 'POST',
+                        data: { itemId: itemId, delta: delta },
+                        success: function (res) {
+                            if (res && res.success) {
+                                renderCartItems(res);
+                            }
+                        }
+                    });
+                }
+            };
+
+            // Initial summary fetch on page ready
+            $(document).ready(function () {
+                refreshDrawer();
+
+                $(document).on('click', '.btn-foodly-add', function () {
+                    var itemId = $(this).data('item-id');
+                    if (itemId) {
+                        FoodlyCart.add(itemId, 1);
+                    }
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

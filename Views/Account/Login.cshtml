@@ -1,0 +1,63 @@
+@model FoodDeliveryApp.Models.ViewModels.LoginViewModel
+@{
+    ViewBag.Title = "Customer Sign In";
+}
+
+<div class="row justify-content-center my-4">
+    <div class="col-lg-5 col-md-7">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+            <div class="text-center mb-4">
+                <div class="foodly-brand-icon mx-auto mb-3">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                </div>
+                <h3 class="font-weight-bold">Welcome Back</h3>
+                <p class="text-muted small">Sign in to order your favorite dishes or check your ongoing deliveries.</p>
+            </div>
+
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.ReturnUrl)
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger py-2 small" })
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Email, new { @class = "form-label font-weight-bold small text-secondary" })
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control rounded-3", type = "email", placeholder = "name@example.in", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        @Html.LabelFor(m => m.Password, new { @class = "form-label font-weight-bold small text-secondary" })
+                    </div>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control rounded-3", placeholder = "Enter your password" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="form-check mb-4">
+                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
+                    @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label small text-muted" })
+                </div>
+
+                <button type="submit" class="btn btn-warning text-white rounded-pill w-100 py-2 font-weight-bold shadow-sm">
+                    Sign In
+                </button>
+            }
+
+            <div class="text-center mt-4 pt-3 border-top">
+                <span class="text-muted small">New to Foodly Kitchen?</span>
+                <a href="@Url.Action("Register", "Account")" class="text-warning font-weight-bold small ms-1">Create an Account</a>
+            </div>
+
+            <div class="text-center mt-2">
+                <a href="@Url.Action("AdminLogin", "Account")" class="text-secondary small">
+                    <i class="fa-solid fa-lock me-1"></i> Admin Portal Sign In
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

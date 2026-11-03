@@ -1,4 +1,15 @@
-﻿using System.Reflection;
+// =========================================================================================
+// Author:          Sailen Mondal
+// Create Date:     2026-11-03
+// Description:     Assembly information and metadata for FoodDeliveryApp.
+// -----------------------------------------------------------------------------------------
+// Revision History:
+// Date         Author          Description
+// ----------   -------------   ------------------------------------------------------------
+// 2026-11-03   Sailen Mondal   Initial creation.
+// =========================================================================================
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

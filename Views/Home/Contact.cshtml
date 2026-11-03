@@ -1,19 +1,100 @@
-﻿@{
-    ViewBag.Title = "Contact";
+@{
+    ViewBag.Title = "Contact Foodly Kitchen";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
 
-    <address>
-        One Microsoft Way<br />
-        Redmond, WA 98052-6399<br />
-        <abbr title="Phone">P:</abbr>
-        425.555.0100
-    </address>
+<div class="row g-4 mb-5">
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white h-100">
+            <div class="foodly-hero-badge mb-2">
+                <i class="fa-solid fa-headset text-warning"></i>
+                <span>Customer Delight 24/7</span>
+            </div>
+            <h2 class="font-weight-bold mb-3">Get in Touch</h2>
+            <p class="text-secondary small mb-4">
+                @ViewBag.Message
+            </p>
 
-    <address>
-        <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-        <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-    </address>
-</main>
+            <div class="mb-4">
+                <h6 class="font-weight-bold text-dark d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-phone text-warning"></i> Phone Support
+                </h6>
+                <p class="text-muted small mb-0">+91 98765 43210 (Toll-Free Helpline)</p>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="font-weight-bold text-dark d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-envelope text-warning"></i> Email Inquiries
+                </h6>
+                <p class="text-muted small mb-0">support@foodly.in &bull; orders@foodly.in</p>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="font-weight-bold text-dark d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-building text-warning"></i> Head Operations
+                </h6>
+                <p class="text-muted small mb-0">
+                    Foodly Kitchen Pvt. Ltd., Level 4, Tech Park Towers,<br />
+                    Outer Ring Road, Bellandur, Bengaluru, Karnataka &ndash; 560103
+                </p>
+            </div>
+
+            <div class="pt-3 border-top">
+                <span class="small text-muted font-weight-bold">Kitchen Working Hours:</span>
+                <p class="small text-muted mb-0">Monday &ndash; Sunday: 10:00 AM &ndash; 11:30 PM (IST)</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white h-100">
+            <h4 class="font-weight-bold mb-2">Regional Kitchen Hubs Across India</h4>
+            <p class="text-muted small mb-4">Direct dispatch kitchens serving hot meals within our 30-minute radius:</p>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 border bg-light">
+                        <div class="font-weight-bold text-dark"><i class="fa-solid fa-location-dot text-warning me-2"></i>Bengaluru Central Hub</div>
+                        <div class="text-muted small">12th Main Road, Indiranagar, Bengaluru 560038</div>
+                        <div class="text-secondary small mt-1 font-monospace">Phone: +91 98765 43211</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 border bg-light">
+                        <div class="font-weight-bold text-dark"><i class="fa-solid fa-location-dot text-warning me-2"></i>Mumbai West Hub</div>
+                        <div class="text-muted small">Linking Road, Bandra West, Mumbai 400050</div>
+                        <div class="text-secondary small mt-1 font-monospace">Phone: +91 98765 43212</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 border bg-light">
+                        <div class="font-weight-bold text-dark"><i class="fa-solid fa-location-dot text-warning me-2"></i>Delhi NCR Hub</div>
+                        <div class="text-muted small">Connaught Place, New Delhi 110001</div>
+                        <div class="text-secondary small mt-1 font-monospace">Phone: +91 98765 43213</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 border bg-light">
+                        <div class="font-weight-bold text-dark"><i class="fa-solid fa-location-dot text-warning me-2"></i>Pune Hub</div>
+                        <div class="text-muted small">Mayur Colony, Kothrud, Pune 411038</div>
+                        <div class="text-secondary small mt-1 font-monospace">Phone: +91 98765 43214</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 p-3 rounded-3 border border-warning bg-warning bg-opacity-10">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="fs-2 text-warning"><i class="fa-solid fa-bell-concierge"></i></div>
+                    <div>
+                        <div class="font-weight-bold">Live Order Support</div>
+                        <div class="small text-secondary">
+                            Have an ongoing order? Open your <a href="@Url.Action("History", "Order")" class="text-warning font-weight-bold">Order History</a> to review live status.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

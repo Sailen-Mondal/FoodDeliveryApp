@@ -1,0 +1,40 @@
+@{
+    ViewBag.Title = "Order Placed Successfully!";
+    int orderId = ViewBag.OrderId != null ? (int)ViewBag.OrderId : 0;
+}
+
+<div class="row justify-content-center my-4">
+    <div class="col-lg-6 col-md-8 text-center">
+        <div class="card border-0 shadow-sm rounded-4 p-5 bg-white">
+            <div class="foodly-brand-icon mx-auto mb-3" style="width: 70px; height: 70px; font-size: 2rem; background: linear-gradient(135deg, #16a34a, #15803d);">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h2 class="font-weight-bold text-success mb-2">Order Confirmed!</h2>
+            <h5 class="text-muted mb-4">Order Reference: <span class="badge bg-dark font-monospace fs-5">#@orderId</span></h5>
+
+            <p class="text-secondary mb-4">
+                Thank you for ordering with Foodly Kitchen! Your order has been placed into our live queue.
+                Our chefs are currently preparing your dishes fresh using authentic regional recipes.
+            </p>
+
+            <div class="card bg-light border-0 rounded-4 p-3 mb-4 text-start">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="fs-2 text-warning"><i class="fa-solid fa-motorcycle"></i></div>
+                    <div>
+                        <div class="font-weight-bold">Estimated Delivery: 30 &ndash; 40 minutes</div>
+                        <div class="text-muted small">Our delivery partner will reach your contact number once outside.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="@Url.Action("History", "Order")" class="btn btn-warning text-white rounded-pill px-4 py-2 font-weight-bold shadow-sm">
+                    <i class="fa-solid fa-clock-rotate-left me-2"></i> Track in Order History
+                </a>
+                <a href="@Url.Action("Index", "Menu")" class="btn btn-outline-dark rounded-pill px-4 py-2 font-weight-bold">
+                    Order More Dishes
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,116 @@
+@model List<FoodDeliveryApp.Models.MenuItem>
+@{
+    ViewBag.Title = "Full Menu & Delicious Dishes";
+    var categories = ViewBag.Categories as List<FoodDeliveryApp.Models.Category> ?? new List<FoodDeliveryApp.Models.Category>();
+    int? activeCat = ViewBag.ActiveCategoryId as int?;
+    bool? isVeg = ViewBag.IsVeg as bool?;
+    string searchTerm = ViewBag.SearchTerm as string;
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="font-weight-bold m-0"><i class="fa-solid fa-utensils text-warning me-2"></i> Restaurant Menu</h2>
+        <p class="text-muted small m-0">Showing @Model.Count mouthwatering culinary selections</p>
+    </div>
+
+    <!-- Search Form -->
+    <form method="get" action="@Url.Action("Index", "Menu")" class="d-flex gap-2" style="max-width: 380px; width: 100%;">
+        @if (activeCat.HasValue)
+        {
+            <input type="hidden" name="categoryId" value="@activeCat.Value" />
+        }
+        @if (isVeg.HasValue)
+        {
+            <input type="hidden" name="isVeg" value="@isVeg.Value.ToString().ToLower()" />
+        }
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+            <input type="text" name="search" class="form-control border-start-0" placeholder="Search biryani, pizza, burger..." value="@searchTerm" />
+            <button class="btn btn-warning text-white" type="submit">Search</button>
+        </div>
+    </form>
+</div>
+
+<!-- Filters Row -->
+<div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <!-- Category Filter Pills -->
+        <div class="d-flex gap-2 overflow-auto py-1" style="scrollbar-width: thin;">
+            <a href="@Url.Action("Index", "Menu", new { isVeg = isVeg, search = searchTerm })"
+               class="category-pill @(!activeCat.HasValue ? "active" : "")">
+                All Dishes
+            </a>
+            @foreach (var cat in categories)
+            {
+                <a href="@Url.Action("Index", "Menu", new { categoryId = cat.CategoryId, isVeg = isVeg, search = searchTerm })"
+                   class="category-pill @(activeCat.HasValue && activeCat.Value == cat.CategoryId ? "active" : "")">
+                    @cat.Name
+                </a>
+            }
+        </div>
+
+        <!-- Dietary Toggles -->
+        <div class="d-flex align-items-center gap-2">
+            <a href="@Url.Action("Index", "Menu", new { categoryId = activeCat, search = searchTerm })"
+               class="btn btn-sm @(!isVeg.HasValue ? "btn-dark" : "btn-outline-secondary") rounded-pill px-3">
+                All
+            </a>
+            <a href="@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = true, search = searchTerm })"
+               class="btn btn-sm @(isVeg.HasValue && isVeg.Value ? "btn-success text-white" : "btn-outline-success") rounded-pill px-3 d-flex align-items-center gap-1">
+                <span class="diet-badge veg"></span> Pure Veg
+            </a>
+            <a href="@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = false, search = searchTerm })"
+               class="btn btn-sm @(isVeg.HasValue && !isVeg.Value ? "btn-danger text-white" : "btn-outline-danger") rounded-pill px-3 d-flex align-items-center gap-1">
+                <span class="diet-badge nonveg"></span> Non-Veg
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Menu Item Grid -->
+@if (Model == null || !Model.Any())
+{
+    <div class="text-center py-5 bg-white rounded-4 shadow-sm border my-4">
+        <i class="fa-solid fa-utensils fs-1 text-muted opacity-50 mb-3"></i>
+        <h4>No dishes match your selected filters</h4>
+        <p class="text-muted">Try removing search keywords or changing category filters.</p>
+        <a href="@Url.Action("Index", "Menu")" class="btn btn-warning text-white rounded-pill px-4 mt-2">
+            Clear All Filters
+        </a>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="foodly-card">
+                    <div class="foodly-card-img-wrap">
+                        <img src="@item.ImageUrl" alt="@item.Name" class="foodly-card-img" loading="lazy" />
+                        <span class="foodly-card-prep">
+                            <i class="fa-solid fa-clock me-1"></i> @item.PrepTimeMinutes min
+                        </span>
+                        <span class="foodly-card-rating">
+                            <i class="fa-solid fa-star star"></i> @item.Rating.ToString("0.0")
+                        </span>
+                    </div>
+                    <div class="foodly-card-body">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="diet-badge @(item.IsVeg ? "veg" : "nonveg")" title="@(item.IsVeg ? "Pure Vegetarian" : "Non-Vegetarian")"></span>
+                            <span class="badge bg-light text-secondary border small">@item.CategoryName</span>
+                        </div>
+                        <h5 class="foodly-card-title">@item.Name</h5>
+                        <p class="foodly-card-desc">@item.Description</p>
+                        <div class="foodly-card-footer">
+                            <div class="foodly-card-price">&#x20B9;@item.Price.ToString("N2")</div>
+                            <button type="button" class="btn-foodly-add" data-item-id="@item.ItemId" title="Add to Cart">
+                                <i class="fa-solid fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

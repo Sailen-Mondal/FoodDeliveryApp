@@ -1,11 +1,28 @@
-﻿using System.Web;
+// =========================================================================================
+// Author:          Sailen Mondal
+// Create Date:     2026-11-03
+// Description:     Script and style bundle registrations for Food Delivery Application,
+//                  incorporating Bootstrap 5 bundle (with embedded Popper.js) and Foodly theme.
+// -----------------------------------------------------------------------------------------
+// Revision History:
+// Date         Author          Description
+// ----------   -------------   ------------------------------------------------------------
+// 2026-11-03   Sailen Mondal   Initial creation.
+// =========================================================================================
+
 using System.Web.Optimization;
 
 namespace FoodDeliveryApp
 {
+    /// <summary>
+    /// Configures CSS and JavaScript script bundles for optimization and minification.
+    /// </summary>
     public class BundleConfig
     {
-        // For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
+        /// <summary>
+        /// Registers client script and stylesheet bundles.
+        /// </summary>
+        /// <param name="bundles">The bundle collection to configure.</param>
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
@@ -14,17 +31,17 @@ namespace FoodDeliveryApp
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
-            // Use the development version of Modernizr to develop with and learn from. Then, when you're
-            // ready for production, use the build tool at https://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
+            // Use bootstrap.bundle.js which includes Popper.js to enable Bootstrap 5 dropdowns and popovers
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js"));
+                        "~/Scripts/bootstrap.bundle.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                        "~/Content/bootstrap.css",
+                        "~/Content/foodly.css",
+                        "~/Content/Site.css"));
         }
     }
 }

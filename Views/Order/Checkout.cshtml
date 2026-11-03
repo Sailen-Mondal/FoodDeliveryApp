@@ -1,0 +1,121 @@
+@model FoodDeliveryApp.Models.ViewModels.OrderPlacementViewModel
+@{
+    ViewBag.Title = "Complete Your Order & Checkout";
+}
+
+<div class="row g-4 my-2">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+            <h4 class="font-weight-bold mb-3 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-location-dot text-warning"></i>
+                <span>1. Delivery Destination</span>
+            </h4>
+
+            @using (Html.BeginForm("PlaceOrder", "Order", FormMethod.Post, new { id = "checkoutForm" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger py-2 small" })
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.DeliveryAddress, new { @class = "form-label font-weight-bold small text-secondary" })
+                    @Html.TextAreaFor(m => m.DeliveryAddress, new { @class = "form-control rounded-3", rows = "3", placeholder = "Complete street address, flat/building, landmark, city & PIN" })
+                    @Html.ValidationMessageFor(m => m.DeliveryAddress, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="mb-4">
+                    @Html.LabelFor(m => m.ContactPhone, new { @class = "form-label font-weight-bold small text-secondary" })
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">+91</span>
+                        @Html.TextBoxFor(m => m.ContactPhone, new { @class = "form-control rounded-end-3", placeholder = "10-digit mobile number" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.ContactPhone, "", new { @class = "text-danger small" })
+                </div>
+
+                <h4 class="font-weight-bold mb-3 d-flex align-items-center gap-2 pt-2 border-top">
+                    <i class="fa-solid fa-credit-card text-warning"></i>
+                    <span>2. Payment Option</span>
+                </h4>
+
+                <div class="mb-4">
+                    <div class="form-check p-3 border rounded-3 mb-2 bg-light">
+                        <input class="form-check-input ms-0 me-2" type="radio" name="PaymentMethod" id="payCod" value="Cash on Delivery" @(Model.PaymentMethod == "Cash on Delivery" ? "checked" : "") />
+                        <label class="form-check-label font-weight-bold" for="payCod">
+                            <i class="fa-solid fa-money-bill-wave text-success me-2"></i> Cash on Delivery
+                        </label>
+                        <p class="text-muted small ms-4 mb-0">Pay using cash or Google Pay/PhonePe QR code upon arrival at your doorstep.</p>
+                    </div>
+
+                    <div class="form-check p-3 border rounded-3 bg-light">
+                        <input class="form-check-input ms-0 me-2" type="radio" name="PaymentMethod" id="payUpi" value="UPI on Delivery" @(Model.PaymentMethod == "UPI on Delivery" ? "checked" : "") />
+                        <label class="form-check-label font-weight-bold" for="payUpi">
+                            <i class="fa-solid fa-qrcode text-primary me-2"></i> UPI on Delivery (BHIM / Paytm / GPay)
+                        </label>
+                        <p class="text-muted small ms-4 mb-0">Scan the rider's secure dynamic UPI QR code on your mobile banking app.</p>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-danger small" })
+                </div>
+
+                <button type="submit" class="btn btn-warning text-white rounded-pill w-100 py-3 font-weight-bold shadow fs-5">
+                    <i class="fa-solid fa-lock me-2"></i> Confirm &amp; Place Order (&#x20B9;@Model.TotalAmount.ToString("N2"))
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- Order Summary Column -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 80px;">
+            <h5 class="font-weight-bold mb-3 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-bag-shopping text-warning"></i>
+                <span>Order Summary (@Model.Items.Sum(i => i.Quantity) items)</span>
+            </h5>
+
+            <div class="border-bottom pb-3 mb-3" style="max-height: 260px; overflow-y: auto;">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="d-flex align-items-center justify-content-between py-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="diet-badge @(item.IsVeg ? "veg" : "nonveg")"></span>
+                            <div>
+                                <div class="font-weight-bold small">@item.Name</div>
+                                <div class="text-muted small">&#x20B9;@item.Price.ToString("N2") &times; @item.Quantity</div>
+                            </div>
+                        </div>
+                        <div class="font-weight-bold">&#x20B9;@item.TotalPrice.ToString("N2")</div>
+                    </div>
+                }
+            </div>
+
+            <div class="d-flex justify-content-between mb-2 small text-muted">
+                <span>Items Subtotal</span>
+                <span>&#x20B9;@Model.SubTotal.ToString("N2")</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3 small text-muted">
+                <span>Delivery Charge</span>
+                <span>
+                    @if (Model.DeliveryFee == 0)
+                    {
+                        <span class="text-success font-weight-bold">FREE (Orders above &#x20B9;500)</span>
+                    }
+                    else
+                    {
+                        <span>&#x20B9;@Model.DeliveryFee.ToString("N2")</span>
+                    }
+                </span>
+            </div>
+
+            <div class="d-flex justify-content-between pt-3 border-top fs-5 font-weight-bold">
+                <span>Total Payable</span>
+                <span class="text-warning">&#x20B9;@Model.TotalAmount.ToString("N2")</span>
+            </div>
+
+            <div class="alert alert-warning py-2 mt-3 small mb-0 rounded-3">
+                <i class="fa-solid fa-stopwatch me-1"></i> Kitchen begins prep immediately upon order confirmation.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

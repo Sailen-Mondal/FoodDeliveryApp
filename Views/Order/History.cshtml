@@ -1,0 +1,78 @@
+@model List<FoodDeliveryApp.Models.ViewModels.OrderHistoryItemViewModel>
+@{
+    ViewBag.Title = "My Past Orders";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="font-weight-bold m-0"><i class="fa-solid fa-clock-rotate-left text-warning me-2"></i> My Order History</h2>
+        <p class="text-muted small m-0">Track live order statuses and review past culinary journeys</p>
+    </div>
+    <a href="@Url.Action("Index", "Menu")" class="btn btn-warning text-white rounded-pill px-3 font-weight-bold shadow-sm">
+        <i class="fa-solid fa-plus me-1"></i> New Order
+    </a>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4">
+        <i class="fa-solid fa-receipt fs-1 text-muted opacity-50 mb-3"></i>
+        <h4>No past orders placed yet</h4>
+        <p class="text-muted">You have not placed any delicious orders with us yet.</p>
+        <div>
+            <a href="@Url.Action("Index", "Menu")" class="btn btn-warning text-white rounded-pill px-4 py-2 font-weight-bold">
+                Order Delicious Food Now
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Order ID</th>
+                        <th>Ordered Dishes</th>
+                        <th>Delivery Address</th>
+                        <th>Payment Method</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th class="pe-4">Placed At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        var statusClass = order.Status.ToLower();
+                        <tr>
+                            <td class="ps-4 font-monospace font-weight-bold">#@order.OrderId</td>
+                            <td style="max-width: 320px;">
+                                <div class="small font-weight-bold text-dark">@order.ItemsSummary</div>
+                            </td>
+                            <td style="max-width: 250px;">
+                                <div class="small text-muted text-truncate" title="@order.DeliveryAddress">
+                                    <i class="fa-solid fa-location-dot me-1 text-secondary"></i> @order.DeliveryAddress
+                                </div>
+                                <div class="small text-muted">Phone: @order.ContactPhone</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border small">@order.PaymentMethod</span>
+                            </td>
+                            <td class="font-weight-bold fs-6">
+                                &#x20B9;@order.TotalAmount.ToString("N2")
+                            </td>
+                            <td>
+                                <span class="badge-status @statusClass">@order.Status</span>
+                            </td>
+                            <td class="pe-4 text-muted small">
+                                @order.PlacedAt.ToString("dd MMM yyyy, hh:mm tt")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

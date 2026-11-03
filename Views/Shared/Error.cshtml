@@ -1,13 +1,25 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Error</title>
-</head>
-<body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
-</body>
-</html>
+@{
+    ViewBag.Title = "Something Went Wrong";
+}
+
+<div class="row justify-content-center my-5">
+    <div class="col-lg-6 col-md-8 text-center">
+        <div class="card border-0 shadow-sm rounded-4 p-5 bg-white">
+            <div class="foodly-brand-icon mx-auto mb-3" style="width: 70px; height: 70px; font-size: 2rem; background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h2 class="font-weight-bold text-danger mb-2">Oops! Unexpected Error</h2>
+            <p class="text-secondary mb-4">
+                We encountered an unexpected issue while processing your request. Our culinary engineering team has been notified.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-warning text-white rounded-pill px-4 py-2 font-weight-bold shadow-sm">
+                    <i class="fa-solid fa-house me-2"></i> Return Home
+                </a>
+                <a href="@Url.Action("Index", "Menu")" class="btn btn-outline-dark rounded-pill px-4 py-2 font-weight-bold">
+                    Browse Dishes
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

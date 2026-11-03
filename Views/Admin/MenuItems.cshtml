@@ -1,0 +1,95 @@
+@model FoodDeliveryApp.Models.ViewModels.AdminMenuItemViewModel
+@{
+    ViewBag.Title = "Product Inventory & Catalog Management";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="font-weight-bold m-0 d-flex align-items-center gap-2">
+            <i class="fa-solid fa-layer-group text-warning"></i>
+            <span>Menu Items &amp; Inventory</span>
+        </h2>
+        <p class="text-muted small m-0">Control kitchen item availability and modify menu prices in real time</p>
+    </div>
+    <a href="@Url.Action("Orders", "Admin")" class="btn btn-outline-dark rounded-pill px-3 font-weight-bold">
+        <i class="fa-solid fa-clipboard-list me-1"></i> Today's Orders
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Item #</th>
+                    <th>Dish Details</th>
+                    <th>Category</th>
+                    <th>Diet Type</th>
+                    <th>Price (&#x20B9;)</th>
+                    <th>Kitchen Availability</th>
+                    <th class="pe-4 text-center">Update Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.MenuItems)
+                {
+                    <tr>
+                        <td class="ps-4 font-monospace font-weight-bold">#@item.ItemId</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@item.ImageUrl" alt="@item.Name" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;" />
+                                <div>
+                                    <div class="font-weight-bold text-dark">@item.Name</div>
+                                    <div class="small text-muted text-truncate" style="max-width: 280px;" title="@item.Description">
+                                        @item.Description
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border small">@item.CategoryName</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="diet-badge @(item.IsVeg ? "veg" : "nonveg")"></span>
+                                <span class="small font-weight-bold @(item.IsVeg ? "text-success" : "text-danger")">
+                                    @(item.IsVeg ? "Veg" : "Non-Veg")
+                                </span>
+                            </div>
+                        </td>
+                        <td class="font-weight-bold fs-6">
+                            &#x20B9;@item.Price.ToString("N2")
+                        </td>
+                        <td>
+                            <!-- Availability Toggle -->
+                            @using (Html.BeginForm("ToggleAvailability", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="itemId" value="@item.ItemId" />
+                                <button type="submit" class="btn btn-sm @(item.IsAvailable ? "btn-success" : "btn-secondary") rounded-pill px-3 py-1 font-weight-bold" title="Click to toggle availability">
+                                    <i class="fa-solid @(item.IsAvailable ? "fa-circle-check" : "fa-circle-xmark") me-1"></i>
+                                    @(item.IsAvailable ? "Available" : "Out of Stock")
+                                </button>
+                            }
+                        </td>
+                        <td class="pe-4 text-center">
+                            <!-- Quick Price Update Form -->
+                            @using (Html.BeginForm("UpdatePrice", "Admin", FormMethod.Post, new { @class = "d-inline-flex align-items-center gap-1 justify-content-center" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="itemId" value="@item.ItemId" />
+                                <div class="input-group input-group-sm" style="max-width: 140px;">
+                                    <span class="input-group-text">&#x20B9;</span>
+                                    <input type="number" step="any" min="1" max="50000" name="newPrice" value="@item.Price.ToString("0.##")" class="form-control" required />
+                                    <button type="submit" class="btn btn-warning text-white" title="Save price">
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                    </button>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
