@@ -1,20 +1,32 @@
 @model List<FoodDeliveryApp.Models.MenuItem>
 @{
-    ViewBag.Title = "Full Menu & Delicious Dishes";
+    ViewBag.Title = "Full Menu";
     var categories = ViewBag.Categories as List<FoodDeliveryApp.Models.Category> ?? new List<FoodDeliveryApp.Models.Category>();
+    var recommendations = ViewBag.Recommendations as List<FoodDeliveryApp.Models.MenuItem> ?? new List<FoodDeliveryApp.Models.MenuItem>();
     int? activeCat = ViewBag.ActiveCategoryId as int?;
     bool? isVeg = ViewBag.IsVeg as bool?;
     string searchTerm = ViewBag.SearchTerm as string;
+    string sortBy = ViewBag.SortBy as string ?? "popular";
+    decimal? minPrice = ViewBag.MinPrice as decimal?;
+    decimal? maxPrice = ViewBag.MaxPrice as decimal?;
 }
 
-<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+<!-- Breadcrumbs -->
+<div class="foodly-breadcrumbs">
+    <a href="@Url.Action("Index", "Home")">Home</a>
+    <span class="sep">/</span>
+    <span class="current">Full Menu</span>
+</div>
+
+<!-- Page Header with Integrated Search -->
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pb-2">
     <div>
-        <h2 class="font-weight-bold m-0"><i class="fa-solid fa-utensils text-warning me-2"></i> Restaurant Menu</h2>
-        <p class="text-muted small m-0">Showing @Model.Count mouthwatering culinary selections</p>
+        <h1 class="font-weight-bold m-0" style="font-size: 2.25rem; letter-spacing: -0.5px;">Full Menu</h1>
+        <p class="text-muted small m-0 mt-1">@Model.Count dishes made fresh to order, delivered to your door</p>
     </div>
 
-    <!-- Search Form -->
-    <form method="get" action="@Url.Action("Index", "Menu")" class="d-flex gap-2" style="max-width: 380px; width: 100%;">
+    <!-- Search Bar Pill matching reference -->
+    <form method="get" action="@Url.Action("Index", "Menu")" class="foodly-search-pill" style="min-width: 320px; max-width: 440px; width: 100%;">
         @if (activeCat.HasValue)
         {
             <input type="hidden" name="categoryId" value="@activeCat.Value" />
@@ -23,94 +35,262 @@
         {
             <input type="hidden" name="isVeg" value="@isVeg.Value.ToString().ToLower()" />
         }
-        <div class="input-group">
-            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-            <input type="text" name="search" class="form-control border-start-0" placeholder="Search biryani, pizza, burger..." value="@searchTerm" />
-            <button class="btn btn-warning text-white" type="submit">Search</button>
-        </div>
+        <i class="fa-solid fa-magnifying-glass text-muted ms-1"></i>
+        <input type="text" name="search" class="foodly-search-input" placeholder="Search biryani, pizza, burger, drinks..." value="@searchTerm" />
+        <button type="submit" class="btn-foodly-search">Search</button>
     </form>
 </div>
 
-<!-- Filters Row -->
-<div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <!-- Category Filter Pills -->
-        <div class="d-flex gap-2 overflow-auto py-1" style="scrollbar-width: thin;">
-            <a href="@Url.Action("Index", "Menu", new { isVeg = isVeg, search = searchTerm })"
-               class="category-pill @(!activeCat.HasValue ? "active" : "")">
-                All Dishes
-            </a>
-            @foreach (var cat in categories)
-            {
-                <a href="@Url.Action("Index", "Menu", new { categoryId = cat.CategoryId, isVeg = isVeg, search = searchTerm })"
-                   class="category-pill @(activeCat.HasValue && activeCat.Value == cat.CategoryId ? "active" : "")">
-                    @cat.Name
-                </a>
-            }
-        </div>
+<!-- Two-Column Layout: Sticky Filters Sidebar + Food Catalog Grid -->
+<div class="row g-4">
+    <!-- Left Column: Filters Sidebar -->
+    <div class="col-lg-3 col-md-4">
+        <aside class="foodly-filter-card">
+            <div class="foodly-filter-header">
+                <h5>Filters</h5>
+                <a href="@Url.Action("Index", "Menu")" class="foodly-clear-all">Clear all</a>
+            </div>
 
-        <!-- Dietary Toggles -->
-        <div class="d-flex align-items-center gap-2">
-            <a href="@Url.Action("Index", "Menu", new { categoryId = activeCat, search = searchTerm })"
-               class="btn btn-sm @(!isVeg.HasValue ? "btn-dark" : "btn-outline-secondary") rounded-pill px-3">
-                All
-            </a>
-            <a href="@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = true, search = searchTerm })"
-               class="btn btn-sm @(isVeg.HasValue && isVeg.Value ? "btn-success text-white" : "btn-outline-success") rounded-pill px-3 d-flex align-items-center gap-1">
-                <span class="diet-badge veg"></span> Pure Veg
-            </a>
-            <a href="@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = false, search = searchTerm })"
-               class="btn btn-sm @(isVeg.HasValue && !isVeg.Value ? "btn-danger text-white" : "btn-outline-danger") rounded-pill px-3 d-flex align-items-center gap-1">
-                <span class="diet-badge nonveg"></span> Non-Veg
-            </a>
-        </div>
-    </div>
-</div>
+            <form method="get" action="@Url.Action("Index", "Menu")" id="filterSidebarForm">
+                @if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    <input type="hidden" name="search" value="@searchTerm" />
+                }
+                <input type="hidden" name="sortBy" value="@sortBy" />
 
-<!-- Menu Item Grid -->
-@if (Model == null || !Model.Any())
-{
-    <div class="text-center py-5 bg-white rounded-4 shadow-sm border my-4">
-        <i class="fa-solid fa-utensils fs-1 text-muted opacity-50 mb-3"></i>
-        <h4>No dishes match your selected filters</h4>
-        <p class="text-muted">Try removing search keywords or changing category filters.</p>
-        <a href="@Url.Action("Index", "Menu")" class="btn btn-warning text-white rounded-pill px-4 mt-2">
-            Clear All Filters
-        </a>
-    </div>
-}
-else
-{
-    <div class="row g-4">
-        @foreach (var item in Model)
-        {
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="foodly-card">
-                    <div class="foodly-card-img-wrap">
-                        <img src="@item.ImageUrl" alt="@item.Name" class="foodly-card-img" loading="lazy" />
-                        <span class="foodly-card-prep">
-                            <i class="fa-solid fa-clock me-1"></i> @item.PrepTimeMinutes min
-                        </span>
-                        <span class="foodly-card-rating">
-                            <i class="fa-solid fa-star star"></i> @item.Rating.ToString("0.0")
-                        </span>
-                    </div>
-                    <div class="foodly-card-body">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="diet-badge @(item.IsVeg ? "veg" : "nonveg")" title="@(item.IsVeg ? "Pure Vegetarian" : "Non-Vegetarian")"></span>
-                            <span class="badge bg-light text-secondary border small">@item.CategoryName</span>
-                        </div>
-                        <h5 class="foodly-card-title">@item.Name</h5>
-                        <p class="foodly-card-desc">@item.Description</p>
-                        <div class="foodly-card-footer">
-                            <div class="foodly-card-price">&#x20B9;@item.Price.ToString("N2")</div>
-                            <button type="button" class="btn-foodly-add" data-item-id="@item.ItemId" title="Add to Cart">
-                                <i class="fa-solid fa-plus"></i> Add
-                            </button>
-                        </div>
+                <!-- Category Section -->
+                <div class="filter-group">
+                    <div class="filter-group-title">Category</div>
+                    <label class="filter-checkbox-label">
+                        <input type="radio" name="categoryId" value="" @(!activeCat.HasValue ? "checked" : "") onchange="this.form.submit()" />
+                        <span>ALL</span>
+                    </label>
+                    @foreach (var cat in categories)
+                    {
+                        <label class="filter-checkbox-label">
+                            <input type="radio" name="categoryId" value="@cat.CategoryId" @(activeCat.HasValue && activeCat.Value == cat.CategoryId ? "checked" : "") onchange="this.form.submit()" />
+                            <span>@cat.Name</span>
+                        </label>
+                    }
+                </div>
+
+                <!-- Portion Size Section -->
+                <div class="filter-group">
+                    <div class="filter-group-title">Portion Size</div>
+                    <div class="portion-pill-group">
+                        <span class="portion-pill active">Regular</span>
+                        <span class="portion-pill">Large</span>
+                        <span class="portion-pill">Family</span>
                     </div>
                 </div>
+
+                <!-- Dietary Section -->
+                <div class="filter-group">
+                    <div class="filter-group-title">Dietary</div>
+                    <label class="filter-checkbox-label">
+                        <input type="radio" name="isVeg" value="" @(!isVeg.HasValue ? "checked" : "") onchange="this.form.submit()" />
+                        <span>All Choices</span>
+                    </label>
+                    <label class="filter-checkbox-label">
+                        <input type="radio" name="isVeg" value="true" @(isVeg.HasValue && isVeg.Value ? "checked" : "") onchange="this.form.submit()" />
+                        <span class="d-flex align-items-center gap-2">
+                            <span class="diet-badge veg"></span> Vegetarian (Pure Veg)
+                        </span>
+                    </label>
+                    <label class="filter-checkbox-label">
+                        <input type="radio" name="isVeg" value="false" @(isVeg.HasValue && !isVeg.Value ? "checked" : "") onchange="this.form.submit()" />
+                        <span class="d-flex align-items-center gap-2">
+                            <span class="diet-badge nonveg"></span> Non-Veg
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Price Range Section -->
+                <div class="filter-group">
+                    <div class="filter-group-title">Price Range</div>
+                    <label class="filter-checkbox-label">
+                        <input type="radio" name="priceRange" value="all" @(!minPrice.HasValue && !maxPrice.HasValue ? "checked" : "") onchange="window.location.href='@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = isVeg, search = searchTerm, sortBy = sortBy })'" />
+                        <span>All Prices</span>
+                    </label>
+                    <label class="filter-checkbox-label">
+                        <input type="radio" name="priceRange" value="under150" @(maxPrice.HasValue && maxPrice.Value <= 150 ? "checked" : "") onchange="window.location.href='@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = isVeg, search = searchTerm, sortBy = sortBy, maxPrice = 150 })'" />
+                        <span>Under &#x20B9;150</span>
+                    </label>
+                    <label class="filter-checkbox-label">
+                        <input type="radio" name="priceRange" value="150to300" @(minPrice.HasValue && minPrice.Value == 150 && maxPrice.HasValue && maxPrice.Value == 300 ? "checked" : "") onchange="window.location.href='@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = isVeg, search = searchTerm, sortBy = sortBy, minPrice = 150, maxPrice = 300 })'" />
+                        <span>&#x20B9;150 - &#x20B9;300</span>
+                    </label>
+                    <label class="filter-checkbox-label">
+                        <input type="radio" name="priceRange" value="above300" @(minPrice.HasValue && minPrice.Value >= 300 ? "checked" : "") onchange="window.location.href='@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = isVeg, search = searchTerm, sortBy = sortBy, minPrice = 300 })'" />
+                        <span>&#x20B9;300 &amp; Above</span>
+                    </label>
+                </div>
+
+                <!-- Availability Section -->
+                <div class="filter-group">
+                    <div class="filter-group-title">Availability</div>
+                    <label class="filter-checkbox-label">
+                        <input type="checkbox" checked disabled />
+                        <span>Available Now</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-foodly-apply-filters mt-2">
+                    Apply Filters
+                </button>
+            </form>
+        </aside>
+    </div>
+
+    <!-- Right Column: Catalog Toolbar & Food Cards Grid -->
+    <div class="col-lg-9 col-md-8">
+        <!-- Catalog Toolbar -->
+        <div class="catalog-toolbar">
+            <div class="catalog-count">
+                @Model.Count Menu Items
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="small text-muted font-weight-bold d-none d-sm-inline">Sort by:</span>
+                <select class="catalog-sort-select" onchange="window.location.href=this.value">
+                    <option value="@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = isVeg, search = searchTerm, minPrice = minPrice, maxPrice = maxPrice, sortBy = "popular" })" @(sortBy == "popular" ? "selected" : "")>Popular</option>
+                    <option value="@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = isVeg, search = searchTerm, minPrice = minPrice, maxPrice = maxPrice, sortBy = "rating" })" @(sortBy == "rating" ? "selected" : "")>Top Rated</option>
+                    <option value="@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = isVeg, search = searchTerm, minPrice = minPrice, maxPrice = maxPrice, sortBy = "price_asc" })" @(sortBy == "price_asc" ? "selected" : "")>Price: Low to High</option>
+                    <option value="@Url.Action("Index", "Menu", new { categoryId = activeCat, isVeg = isVeg, search = searchTerm, minPrice = minPrice, maxPrice = maxPrice, sortBy = "price_desc" })" @(sortBy == "price_desc" ? "selected" : "")>Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Food Item Grid -->
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center py-5 bg-white rounded-4 shadow-sm border my-3">
+                <i class="fa-solid fa-bowl-rice fs-1 text-muted opacity-50 mb-3"></i>
+                <h4>No dishes match your selected filters</h4>
+                <p class="text-muted">Try resetting search keywords or expanding dietary options.</p>
+                <a href="@Url.Action("Index", "Menu")" class="btn btn-warning text-white rounded-pill px-4 mt-2">
+                    Clear All Filters
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    var item = Model[i];
+                    <div class="col-xl-3 col-lg-4 col-sm-6">
+                        <div class="foodly-card">
+                            <div class="foodly-card-img-wrap">
+                                <!-- Top-Left Badge -->
+                                @if (item.Rating >= 4.85m)
+                                {
+                                    <span class="foodly-badge-tag bestseller">BESTSELLER</span>
+                                }
+                                else if (i % 5 == 1)
+                                {
+                                    <span class="foodly-badge-tag new">NEW</span>
+                                }
+                                else if (i % 5 == 2)
+                                {
+                                    <span class="foodly-badge-tag trending">TRENDING</span>
+                                }
+
+                                <!-- Top-Right Heart Button -->
+                                <button type="button" class="foodly-card-fav" title="Save to Favorites" aria-label="Save to Favorites">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+
+                                <!-- Dish Photo with Safe Fallback -->
+                                <img src="@item.ImageUrl" alt="@item.Name" class="foodly-card-img" onerror="this.src='/Content/images/dishes/dish-1.jpg'" />
+                            </div>
+
+                            <div class="foodly-card-body">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="diet-badge @(item.IsVeg ? "veg" : "nonveg")" title="@(item.IsVeg ? "Pure Vegetarian" : "Non-Vegetarian")"></span>
+                                    <span class="badge bg-light text-secondary border small">@item.CategoryName</span>
+                                </div>
+                                <h5 class="foodly-card-title">@item.Name</h5>
+                                <p class="foodly-card-desc">@item.Description</p>
+                                
+                                <div class="foodly-card-meta">
+                                    <span class="foodly-card-rating">
+                                        <i class="fa-solid fa-star star"></i> @item.Rating.ToString("0.0")
+                                        <span class="text-muted font-weight-normal small">(@(item.Rating > 4.7m ? 190 : (item.Rating > 4.5m ? 145 : 82)))</span>
+                                    </span>
+                                    <span class="foodly-card-prep">
+                                        <i class="fa-regular fa-clock"></i> @item.PrepTimeMinutes min
+                                    </span>
+                                </div>
+
+                                <div class="foodly-card-footer">
+                                    <div class="foodly-card-price">&#x20B9;@item.Price.ToString("N0")</div>
+                                    <button type="button" class="btn-circular-add" data-item-id="@item.ItemId" title="Add to Basket" aria-label="Add to Basket">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination matching reference -->
+            <div class="foodly-pagination">
+                <a href="#" class="foodly-page-btn" aria-label="Previous">&lsaquo;</a>
+                <a href="#" class="foodly-page-btn active">1</a>
+                <a href="#" class="foodly-page-btn">2</a>
+                <a href="#" class="foodly-page-btn">3</a>
+                <a href="#" class="foodly-page-btn">4</a>
+                <span class="px-1 text-muted">...</span>
+                <a href="#" class="foodly-page-btn">10</a>
+                <a href="#" class="foodly-page-btn" aria-label="Next">&rsaquo;</a>
             </div>
         }
     </div>
+</div>
+
+<!-- Recently Viewed Section matching reference -->
+@if (recommendations != null && recommendations.Any())
+{
+    <section class="recently-viewed-section">
+        <h3 class="recently-viewed-title">Recently Viewed</h3>
+        <div class="row g-4">
+            @foreach (var rec in recommendations)
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <div class="foodly-card">
+                        <div class="foodly-card-img-wrap">
+                            <button type="button" class="foodly-card-fav" title="Save to Favorites" aria-label="Save to Favorites">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                            <img src="@rec.ImageUrl" alt="@rec.Name" class="foodly-card-img" onerror="this.src='/Content/images/dishes/dish-1.jpg'" />
+                        </div>
+                        <div class="foodly-card-body">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="diet-badge @(rec.IsVeg ? "veg" : "nonveg")"></span>
+                                <span class="badge bg-light text-secondary border small">@rec.CategoryName</span>
+                            </div>
+                            <h5 class="foodly-card-title">@rec.Name</h5>
+                            <p class="foodly-card-desc">@rec.Description</p>
+                            <div class="foodly-card-meta">
+                                <span class="foodly-card-rating">
+                                    <i class="fa-solid fa-star star"></i> @rec.Rating.ToString("0.0")
+                                    <span class="text-muted font-weight-normal small">(120)</span>
+                                </span>
+                                <span class="foodly-card-prep">
+                                    <i class="fa-regular fa-clock"></i> @rec.PrepTimeMinutes min
+                                </span>
+                            </div>
+                            <div class="foodly-card-footer">
+                                <div class="foodly-card-price">&#x20B9;@rec.Price.ToString("N0")</div>
+                                <button type="button" class="btn-circular-add" data-item-id="@rec.ItemId" title="Add to Basket" aria-label="Add to Basket">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
 }

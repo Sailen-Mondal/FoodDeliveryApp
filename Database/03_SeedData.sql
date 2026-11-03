@@ -47,33 +47,33 @@ BEGIN
 
     INSERT INTO dbo.MenuItems (CategoryId, Name, Description, Price, ImageUrl, IsVeg, IsAvailable, Rating, PrepTimeMinutes) VALUES
     -- Biryani & Rice
-    (@CatBiryani, N'Hyderabadi Chicken Dum Biryani', N'Slow-cooked fragrant basmati rice with succulent marinated chicken, saffron and authentic spices.', 299.00, N'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80', 0, 1, 4.8, 25),
-    (@CatBiryani, N'Royal Paneer Tikka Biryani', N'Layers of spiced long grain basmati rice, tandoori charred paneer cubes and caramelized onions.', 249.00, N'https://images.unsplash.com/photo-1642821373181-696a54913e93?w=500&auto=format&fit=crop&q=80', 1, 1, 4.7, 20),
+    (@CatBiryani, N'Hyderabadi Chicken Dum Biryani', N'Slow-cooked fragrant basmati rice with succulent marinated chicken, saffron and authentic spices.', 299.00, N'/Content/images/dishes/dish-1.jpg', 0, 1, 4.8, 25),
+    (@CatBiryani, N'Royal Paneer Tikka Biryani', N'Layers of spiced long grain basmati rice, tandoori charred paneer cubes and caramelized onions.', 249.00, N'/Content/images/dishes/dish-2.jpg', 1, 1, 4.7, 20),
     
     -- Pizzas & Breads
-    (@CatPizza, N'Farmhouse Supreme Veg Pizza', N'Hand-tossed crust topped with spiced tomato sauce, mozzarella, bell peppers, sweet corn, and black olives.', 289.00, N'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80', 1, 1, 4.7, 20),
-    (@CatPizza, N'Classic Margherita Pizza', N'Crispy crust loaded with San Marzano tomato puree, creamy fresh mozzarella, and aromatic basil leaves.', 219.00, N'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=500&auto=format&fit=crop&q=80', 1, 1, 4.6, 15),
-    (@CatPizza, N'Spicy Chicken Pepperoni Pizza', N'Generously layered with smoked chicken pepperoni slices, gooey melted cheese, and chili flakes.', 349.00, N'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&auto=format&fit=crop&q=80', 0, 1, 4.9, 22),
-    (@CatPizza, N'Cheese Garlic Breadsticks', N'Freshly baked artisan breadsticks stuffed with herbs, garlic butter, and overflowing cheddar cheese.', 139.00, N'https://images.unsplash.com/photo-1619860860774-1e2e17343432?w=500&auto=format&fit=crop&q=80', 1, 1, 4.5, 12),
+    (@CatPizza, N'Farmhouse Supreme Veg Pizza', N'Hand-tossed crust topped with spiced tomato sauce, mozzarella, bell peppers, sweet corn, and black olives.', 289.00, N'/Content/images/dishes/dish-3.jpg', 1, 1, 4.7, 20),
+    (@CatPizza, N'Classic Margherita Pizza', N'Crispy crust loaded with San Marzano tomato puree, creamy fresh mozzarella, and aromatic basil leaves.', 219.00, N'/Content/images/dishes/dish-4.jpg', 1, 1, 4.6, 15),
+    (@CatPizza, N'Spicy Chicken Pepperoni Pizza', N'Generously layered with smoked chicken pepperoni slices, gooey melted cheese, and chili flakes.', 349.00, N'/Content/images/dishes/dish-5.jpg', 0, 1, 4.9, 22),
+    (@CatPizza, N'Cheese Garlic Breadsticks', N'Freshly baked artisan breadsticks stuffed with herbs, garlic butter, and overflowing cheddar cheese.', 139.00, N'/Content/images/dishes/dish-6.jpg', 1, 1, 4.5, 12),
 
     -- Burgers & Wraps
-    (@CatBurger, N'Crispy Chicken Zinger Burger', N'Signature golden crispy chicken breast fillet, pickled gherkins, creamy mayo, and crunchy iceberg lettuce.', 189.00, N'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80', 0, 1, 4.8, 15),
-    (@CatBurger, N'Maharaja Double Veg Burger', N'Double spiced potato & corn patties, cheddar cheese slice, fresh tomatoes, and spicy tandoori mayo.', 159.00, N'https://images.unsplash.com/photo-1550547660-d9450f859349?w=500&auto=format&fit=crop&q=80', 1, 1, 4.6, 15),
-    (@CatBurger, N'Kolkata Kathi Chicken Roll', N'Flaky paratha wrap filled with charred chicken tikka pieces, crisp red onions, green chilies, and lime juice.', 149.00, N'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop&q=80', 0, 1, 4.7, 12),
+    (@CatBurger, N'Crispy Chicken Zinger Burger', N'Signature golden crispy chicken breast fillet, pickled gherkins, creamy mayo, and crunchy iceberg lettuce.', 189.00, N'/Content/images/dishes/dish-7.jpg', 0, 1, 4.8, 15),
+    (@CatBurger, N'Maharaja Double Veg Burger', N'Double spiced potato & corn patties, cheddar cheese slice, fresh tomatoes, and spicy tandoori mayo.', 159.00, N'/Content/images/dishes/dish-8.jpg', 1, 1, 4.6, 15),
+    (@CatBurger, N'Kolkata Kathi Chicken Roll', N'Flaky paratha wrap filled with charred chicken tikka pieces, crisp red onions, green chilies, and lime juice.', 149.00, N'/Content/images/dishes/dish-9.jpg', 0, 1, 4.7, 12),
 
     -- Indian Curries
-    (@CatCurry, N'Butter Chicken with 2 Naan', N'Tender roasted chicken simmered in a velvety buttery tomato gravy, served with fluffy garlic butter naan.', 319.00, N'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=500&auto=format&fit=crop&q=80', 0, 1, 4.9, 25),
-    (@CatCurry, N'Paneer Butter Masala Combo', N'Soft paneer cubes in rich cashew-tomato makhani gravy with aromatic spices, served with 2 butter rotis.', 249.00, N'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=80', 1, 1, 4.8, 20),
-    (@CatCurry, N'Dal Makhani Royal Meal Box', N'Slow-cooked black lentils simmered overnight with cream and white butter, served with jeera rice.', 199.00, N'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop&q=80', 1, 1, 4.7, 18),
+    (@CatCurry, N'Butter Chicken with 2 Naan', N'Tender roasted chicken simmered in a velvety buttery tomato gravy, served with fluffy garlic butter naan.', 319.00, N'/Content/images/dishes/dish-10.jpg', 0, 1, 4.9, 25),
+    (@CatCurry, N'Paneer Butter Masala Combo', N'Soft paneer cubes in rich cashew-tomato makhani gravy with aromatic spices, served with 2 butter rotis.', 249.00, N'/Content/images/dishes/dish-11.jpg', 1, 1, 4.8, 20),
+    (@CatCurry, N'Dal Makhani Royal Meal Box', N'Slow-cooked black lentils simmered overnight with cream and white butter, served with jeera rice.', 199.00, N'/Content/images/dishes/dish-12.jpg', 1, 1, 4.7, 18),
 
     -- Snacks & Starters
-    (@CatSnack, N'Delhi Style Samosa Chaat (2 pcs)', N'Crushed crispy potato samosas topped with spicy chole, tangy tamarind chutney, mint dip, and crunchy sev.', 89.00, N'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop&q=80', 1, 1, 4.6, 10),
-    (@CatSnack, N'Peri Peri Crinkle Fries', N'Extra crispy crinkle-cut golden potatoes tossed in hot African bird''s eye chili seasoning with garlic dip.', 119.00, N'https://images.unsplash.com/photo-1576107232684-1279f3908594?w=500&auto=format&fit=crop&q=80', 1, 1, 4.5, 10),
+    (@CatSnack, N'Delhi Style Samosa Chaat (2 pcs)', N'Crushed crispy potato samosas topped with spicy chole, tangy tamarind chutney, mint dip, and crunchy sev.', 89.00, N'/Content/images/dishes/dish-13.jpg', 1, 1, 4.6, 10),
+    (@CatSnack, N'Peri Peri Crinkle Fries', N'Extra crispy crinkle-cut golden potatoes tossed in hot African bird''s eye chili seasoning with garlic dip.', 119.00, N'/Content/images/dishes/dish-14.jpg', 1, 1, 4.5, 10),
 
     -- Beverages & Desserts
-    (@CatDrink, N'Punjabi Mango Lassi (Chilled 350ml)', N'Thick sweet dahi blended with fresh Alphonso mango pulp and cardamom, garnished with chopped pistachios.', 99.00, N'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=500&auto=format&fit=crop&q=80', 1, 1, 4.9, 5),
-    (@CatDrink, N'Cold Coffee with Vanilla Ice Cream', N'Rich chilled espresso shaken with whole milk and topped with a scoop of Madagascar vanilla bean ice cream.', 129.00, N'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=500&auto=format&fit=crop&q=80', 1, 1, 4.8, 5),
-    (@CatDrink, N'Warm Gulab Jamun with Rabdi (2 pcs)', N'Melt-in-mouth milk dumplings soaked in saffron sugar syrup, accompanied by thickened malai rabdi.', 119.00, N'https://images.unsplash.com/photo-1593701461250-d7b22dfd3a77?w=500&auto=format&fit=crop&q=80', 1, 1, 4.9, 5);
+    (@CatDrink, N'Punjabi Mango Lassi (Chilled 350ml)', N'Thick sweet dahi blended with fresh Alphonso mango pulp and cardamom, garnished with chopped pistachios.', 99.00, N'/Content/images/dishes/dish-15.jpg', 1, 1, 4.9, 5),
+    (@CatDrink, N'Cold Coffee with Vanilla Ice Cream', N'Rich chilled espresso shaken with whole milk and topped with a scoop of Madagascar vanilla bean ice cream.', 129.00, N'/Content/images/dishes/dish-16.jpg', 1, 1, 4.8, 5),
+    (@CatDrink, N'Warm Gulab Jamun with Rabdi (2 pcs)', N'Melt-in-mouth milk dumplings soaked in saffron sugar syrup, accompanied by thickened malai rabdi.', 119.00, N'/Content/images/dishes/dish-17.jpg', 1, 1, 4.9, 5);
 END
 GO
 

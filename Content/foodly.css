@@ -1,44 +1,56 @@
 /* =========================================================================================
    Author:          Sailen Mondal
    Create Date:     2026-11-03
-   Description:     Cohesive Foodly Design System stylesheet providing color tokens, card layouts,
-                    Indian veg/non-veg badges, accessible dialog drawer, and admin dashboards.
+   Description:     Cohesive Foodly Design System stylesheet inspired by Foodly Kitchen commercial
+                    specifications. Features warm gourmet linen backgrounds, circular amber add
+                    buttons, badges (BESTSELLER, NEW, TRENDING), sticky filter sidebar, 
+                    accessible cart dialog drawer, and responsive food card catalog grids.
    -----------------------------------------------------------------------------------------
    Revision History:
    Date         Author          Description
    ----------   -------------   ------------------------------------------------------------
    2026-11-03   Sailen Mondal   Initial creation.
-   2026-11-03   Sailen Mondal   Added overflow containment and dialog:not([open]) display hiding.
+   2026-11-03   Sailen Mondal   Redesigned to match Foodly Kitchen visual reference specifications,
+                                eliminating AI slop, adding circular amber add buttons, warm linen
+                                palette, and high-contrast commercial footer.
    ========================================================================================= */
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 :root {
-    --foodly-primary: #f59e0b;
-    --foodly-primary-hover: #d97706;
-    --foodly-primary-light: #fef3c7;
-    --foodly-primary-dark: #b45309;
-    --foodly-dark: #1e293b;
-    --foodly-dark-muted: #64748b;
-    --foodly-light-bg: #fbf9f5;
+    --foodly-primary: #f5a623;
+    --foodly-primary-hover: #e09612;
+    --foodly-primary-dark: #b26a00;
+    --foodly-primary-light: #fef4dc;
+    --foodly-dark: #191e24;
+    --foodly-dark-muted: #5e6875;
+    --foodly-light-bg: #faf7f2;
     --foodly-card-bg: #ffffff;
-    --foodly-border: #f1ede4;
+    --foodly-border: #ece7de;
+    --foodly-border-hover: #dcd3c4;
     --foodly-veg: #16a34a;
-    --foodly-nonveg: #dc2626;
-    --foodly-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --foodly-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
-    --foodly-shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.12);
-    --foodly-radius-sm: 8px;
-    --foodly-radius: 16px;
+    --foodly-nonveg: #b91c1c;
+    --foodly-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
+    --foodly-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    --foodly-shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.09);
+    --foodly-radius-sm: 10px;
+    --foodly-radius: 18px;
     --foodly-radius-lg: 24px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 body {
     background-color: var(--foodly-light-bg);
     color: var(--foodly-dark);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 main {
@@ -50,9 +62,9 @@ main {
    ------------------------------------------------------------------------- */
 .foodly-navbar {
     background: #ffffff;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.03);
     border-bottom: 1px solid var(--foodly-border);
-    padding: 0.75rem 1rem;
+    padding: 0.85rem 1rem;
     position: sticky;
     top: 0;
     z-index: 1020;
@@ -66,9 +78,9 @@ main {
 }
 
 .foodly-nav-logo {
-    height: 42px;
+    height: 44px;
     width: auto;
-    max-width: 175px;
+    max-width: 180px;
     display: block;
     transition: transform 0.2s ease;
 }
@@ -77,146 +89,355 @@ main {
     transform: scale(1.02);
 }
 
-.foodly-footer-logo {
-    height: 38px;
-    width: auto;
-    max-width: 160px;
-    display: block;
-}
-
-.foodly-brand-icon {
-    width: 38px;
-    height: 38px;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: #ffffff;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.15rem;
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.35);
-}
-
-.foodly-brand span.accent {
-    color: var(--foodly-primary);
-}
-
 .foodly-nav-link {
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.95rem;
     color: var(--foodly-dark);
-    padding: 0.5rem 0.9rem;
-    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
     transition: all 0.2s ease;
     text-decoration: none;
 }
 
-.foodly-nav-link:hover, .foodly-nav-link.active {
-    color: var(--foodly-primary-hover);
+.foodly-nav-link:hover {
+    color: var(--foodly-primary-dark);
     background-color: var(--foodly-primary-light);
 }
 
-.foodly-cart-btn {
+.foodly-nav-link.active {
+    color: #111827;
+    background-color: var(--foodly-primary-light);
+    font-weight: 700;
+}
+
+/* Navbar Action Buttons */
+.foodly-icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #f8fafc;
+    border: 1px solid var(--foodly-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--foodly-dark);
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.foodly-icon-btn:hover {
+    background: #ffffff;
+    border-color: var(--foodly-primary);
+    color: var(--foodly-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--foodly-shadow-sm);
+}
+
+.foodly-icon-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
     background: var(--foodly-primary);
-    color: #ffffff;
+    color: #111827;
+    font-weight: 800;
+    font-size: 0.72rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+}
+
+.btn-foodly-order-now {
+    background: var(--foodly-primary);
+    color: #111827 !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 9999px;
+    padding: 0.55rem 1.4rem;
     border: none;
-    border-radius: 30px;
-    padding: 0.45rem 1.1rem;
-    font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    text-decoration: none;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.35);
+}
+
+.btn-foodly-order-now:hover {
+    background: var(--foodly-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(224, 150, 18, 0.45);
+}
+
+/* -------------------------------------------------------------------------
+   Breadcrumbs & Header Search
+   ------------------------------------------------------------------------- */
+.foodly-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--foodly-dark-muted);
+    margin-bottom: 0.75rem;
+}
+
+.foodly-breadcrumbs a {
+    color: var(--foodly-dark-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.foodly-breadcrumbs a:hover {
+    color: var(--foodly-primary-dark);
+}
+
+.foodly-breadcrumbs span.sep {
+    opacity: 0.5;
+    font-size: 0.8rem;
+}
+
+.foodly-breadcrumbs span.current {
+    color: var(--foodly-dark);
+    font-weight: 600;
+}
+
+.foodly-search-pill {
+    background: #ffffff;
+    border: 1px solid var(--foodly-border);
+    border-radius: 9999px;
+    padding: 4px 6px 4px 16px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--foodly-shadow-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.foodly-search-pill:focus-within {
+    border-color: var(--foodly-primary);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.2);
+}
+
+.foodly-search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.92rem;
+    flex: 1;
+    color: var(--foodly-dark);
+}
+
+.foodly-search-input::placeholder {
+    color: #94a3b8;
+}
+
+.btn-foodly-search {
+    background: var(--foodly-primary);
+    color: #111827;
+    border: none;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    padding: 0.45rem 1.25rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-foodly-search:hover {
+    background: var(--foodly-primary-hover);
+}
+
+/* -------------------------------------------------------------------------
+   Sidebar Filters Card
+   ------------------------------------------------------------------------- */
+.foodly-filter-card {
+    background: #ffffff;
+    border: 1px solid var(--foodly-border);
+    border-radius: var(--foodly-radius);
+    padding: 1.5rem;
+    box-shadow: var(--foodly-shadow-sm);
+    position: sticky;
+    top: 90px;
+}
+
+.foodly-filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--foodly-border);
+    margin-bottom: 1.25rem;
+}
+
+.foodly-filter-header h5 {
+    font-weight: 800;
+    font-size: 1.15rem;
+    margin: 0;
+    color: var(--foodly-dark);
+}
+
+.foodly-clear-all {
+    color: var(--foodly-primary-dark);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.foodly-clear-all:hover {
+    text-decoration: underline;
+}
+
+.filter-group {
+    margin-bottom: 1.35rem;
+}
+
+.filter-group-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--foodly-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+}
+
+.filter-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: 0.9rem;
+    color: var(--foodly-dark);
+    cursor: pointer;
+    padding: 0.35rem 0;
+    transition: color 0.15s ease;
+}
+
+.filter-checkbox-label:hover {
+    color: var(--foodly-primary-dark);
+}
+
+.filter-checkbox-label input[type="radio"],
+.filter-checkbox-label input[type="checkbox"] {
+    accent-color: var(--foodly-primary);
+    width: 17px;
+    height: 17px;
     cursor: pointer;
 }
 
-.foodly-cart-btn:hover {
-    background: var(--foodly-primary-hover);
-    color: #ffffff;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
+.portion-pill-group {
+    display: flex;
+    gap: 0.5rem;
 }
 
-.foodly-cart-badge {
+.portion-pill {
+    flex: 1;
+    text-align: center;
+    padding: 0.4rem 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid var(--foodly-border);
     background: #ffffff;
-    color: var(--foodly-primary-dark);
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--foodly-dark-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.portion-pill:hover,
+.portion-pill.active {
+    background: var(--foodly-primary);
+    border-color: var(--foodly-primary);
+    color: #111827;
+    font-weight: 700;
+}
+
+.btn-foodly-apply-filters {
+    background: var(--foodly-primary);
+    color: #111827;
+    border: none;
+    border-radius: 9999px;
     font-weight: 800;
+    font-size: 0.95rem;
+    padding: 0.7rem 1.25rem;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3);
+}
+
+.btn-foodly-apply-filters:hover {
+    background: var(--foodly-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(224, 150, 18, 0.4);
 }
 
 /* -------------------------------------------------------------------------
-   Indian Veg / Non-Veg Markers (FSSAI Style)
+   Food Cards Grid & Elements
    ------------------------------------------------------------------------- */
-.diet-badge {
-    width: 18px;
-    height: 18px;
-    border-radius: 3px;
-    display: inline-flex;
+.catalog-toolbar {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    border-width: 2px;
-    border-style: solid;
-    flex-shrink: 0;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
 }
 
-.diet-badge.veg {
-    border-color: var(--foodly-veg);
+.catalog-count {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--foodly-dark);
 }
 
-.diet-badge.veg::after {
-    content: "";
-    width: 8px;
-    height: 8px;
-    background-color: var(--foodly-veg);
-    border-radius: 50%;
+.catalog-sort-select {
+    background: #ffffff;
+    border: 1px solid var(--foodly-border);
+    border-radius: 9999px;
+    padding: 0.45rem 1.25rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--foodly-dark);
+    outline: none;
+    cursor: pointer;
+    box-shadow: var(--foodly-shadow-sm);
+    transition: border-color 0.2s ease;
 }
 
-.diet-badge.nonveg {
-    border-color: var(--foodly-nonveg);
+.catalog-sort-select:focus {
+    border-color: var(--foodly-primary);
 }
 
-.diet-badge.nonveg::after {
-    content: "";
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 9px solid var(--foodly-nonveg);
-}
-
-/* -------------------------------------------------------------------------
-   Food Cards (Foodly Kitchen Modern Style)
-   ------------------------------------------------------------------------- */
+/* Modern Foodly Card */
 .foodly-card {
     background: var(--foodly-card-bg);
     border-radius: var(--foodly-radius);
     border: 1px solid var(--foodly-border);
     overflow: hidden;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
     box-shadow: var(--foodly-shadow-sm);
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 }
 
 .foodly-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
     box-shadow: var(--foodly-shadow);
-    border-color: #e5dfd3;
+    border-color: var(--foodly-border-hover);
 }
 
 .foodly-card-img-wrap {
     position: relative;
     width: 100%;
-    padding-top: 60%; /* 16:9 -ish aspect ratio */
+    padding-top: 80%; /* 5:4 ratio, spacious and appetizing */
     overflow: hidden;
-    background-color: #f1f5f9;
+    background-color: #f8fafc;
 }
 
 .foodly-card-img {
@@ -230,42 +451,71 @@ main {
 }
 
 .foodly-card:hover .foodly-card-img {
-    transform: scale(1.05);
+    transform: scale(1.06);
 }
 
-.foodly-card-prep {
+/* Badges (BESTSELLER, NEW, TRENDING) */
+.foodly-badge-tag {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(30, 41, 59, 0.85);
-    backdrop-filter: blur(4px);
-    color: #ffffff;
+    top: 12px;
+    left: 12px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     padding: 0.25rem 0.6rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    border-radius: 6px;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-.foodly-card-rating {
+.foodly-badge-tag.bestseller {
+    background: #f59e0b;
+    color: #111827;
+}
+
+.foodly-badge-tag.new {
+    background: #eab308;
+    color: #111827;
+}
+
+.foodly-badge-tag.trending {
+    background: #e11d48;
+    color: #ffffff;
+}
+
+/* Favorite Heart Button */
+.foodly-card-fav {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ffffff;
-    color: #1e293b;
-    padding: 0.25rem 0.55rem;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    border: none;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    justify-content: center;
+    color: #94a3b8;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.foodly-card-rating .star {
-    color: #f59e0b;
+.foodly-card-fav:hover {
+    color: #ef4444;
+    transform: scale(1.15);
 }
 
+.foodly-card-fav.active {
+    color: #ef4444;
+    background: #ffffff;
+}
+
+/* Card Body */
 .foodly-card-body {
     padding: 1.15rem;
     display: flex;
@@ -282,10 +532,10 @@ main {
 }
 
 .foodly-card-desc {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: var(--foodly-dark-muted);
     line-height: 1.45;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -293,11 +543,39 @@ main {
     flex: 1;
 }
 
+.foodly-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-size: 0.8rem;
+    color: var(--foodly-dark-muted);
+    margin-bottom: 0.85rem;
+}
+
+.foodly-card-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 700;
+    color: var(--foodly-dark);
+}
+
+.foodly-card-rating .star {
+    color: #f59e0b;
+}
+
+.foodly-card-prep {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Card Footer: Price & Circular Amber Add Button */
 .foodly-card-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 0.75rem;
+    padding-top: 0.65rem;
     border-top: 1px dashed var(--foodly-border);
 }
 
@@ -305,45 +583,148 @@ main {
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--foodly-dark);
+    letter-spacing: -0.2px;
 }
 
-.btn-foodly-add {
+/* The Authentic Foodly Circular Add Button */
+.btn-circular-add {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
     background: var(--foodly-primary);
-    color: #ffffff;
+    color: #111827;
     border: none;
-    border-radius: 8px;
-    padding: 0.45rem 1rem;
-    font-weight: 700;
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 0.35rem;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
 }
 
-.btn-foodly-add:hover {
+.btn-circular-add:hover {
     background: var(--foodly-primary-hover);
     color: #ffffff;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+    transform: scale(1.12);
+    box-shadow: 0 6px 16px rgba(224, 150, 18, 0.5);
+}
+
+.btn-circular-add:active {
+    transform: scale(0.92);
 }
 
 /* -------------------------------------------------------------------------
-   Hero Section
+   Dietary Markers (FSSAI Specification)
+   ------------------------------------------------------------------------- */
+.diet-badge {
+    width: 17px;
+    height: 17px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-width: 2px;
+    border-style: solid;
+    flex-shrink: 0;
+}
+
+.diet-badge.veg {
+    border-color: var(--foodly-veg);
+}
+
+.diet-badge.veg::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    background-color: var(--foodly-veg);
+    border-radius: 50%;
+}
+
+.diet-badge.nonveg {
+    border-color: var(--foodly-nonveg);
+}
+
+.diet-badge.nonveg::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid var(--foodly-nonveg);
+}
+
+/* -------------------------------------------------------------------------
+   Pagination
+   ------------------------------------------------------------------------- */
+.foodly-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 3rem 0 1.5rem 0;
+}
+
+.foodly-page-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--foodly-border);
+    background: #ffffff;
+    color: var(--foodly-dark);
+    font-weight: 700;
+    font-size: 0.88rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: var(--foodly-shadow-sm);
+}
+
+.foodly-page-btn:hover {
+    border-color: var(--foodly-primary);
+    color: var(--foodly-primary-dark);
+}
+
+.foodly-page-btn.active {
+    background: var(--foodly-primary);
+    border-color: var(--foodly-primary);
+    color: #111827;
+}
+
+/* -------------------------------------------------------------------------
+   Recently Viewed / Chef's Favorites Section
+   ------------------------------------------------------------------------- */
+.recently-viewed-section {
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--foodly-border);
+}
+
+.recently-viewed-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--foodly-dark);
+    margin-bottom: 1.5rem;
+}
+
+/* -------------------------------------------------------------------------
+   Hero Section (Home Page)
    ------------------------------------------------------------------------- */
 .foodly-hero {
     background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fed7aa 100%);
-    padding: 3.5rem 1rem;
+    padding: 3.5rem 2rem;
     border-radius: var(--foodly-radius-lg);
-    margin: 1.5rem 0 2.5rem 0;
+    margin: 1.5rem 0 3rem 0;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 166, 35, 0.2);
 }
 
 .foodly-hero-title {
-    font-size: 2.75rem;
+    font-size: 2.85rem;
     font-weight: 900;
     line-height: 1.15;
     color: #1e293b;
@@ -352,7 +733,7 @@ main {
 
 .foodly-hero-title span.highlight {
     color: var(--foodly-primary);
-    background: linear-gradient(120deg, #f59e0b, #d97706);
+    background: linear-gradient(120deg, #f5a623, #d97706);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -370,7 +751,7 @@ main {
     gap: 0.4rem;
     background: rgba(255, 255, 255, 0.9);
     padding: 0.35rem 0.85rem;
-    border-radius: 20px;
+    border-radius: 9999px;
     font-size: 0.8rem;
     font-weight: 700;
     color: var(--foodly-primary-dark);
@@ -378,14 +759,12 @@ main {
     box-shadow: var(--foodly-shadow-sm);
 }
 
-/* -------------------------------------------------------------------------
-   Category Pills & Filter Bar
-   ------------------------------------------------------------------------- */
+/* Category Pills on Home */
 .category-pill {
     background: #ffffff;
     border: 1px solid var(--foodly-border);
-    border-radius: 30px;
-    padding: 0.55rem 1.15rem;
+    border-radius: 9999px;
+    padding: 0.55rem 1.25rem;
     font-weight: 600;
     color: var(--foodly-dark);
     text-decoration: none;
@@ -394,18 +773,20 @@ main {
     align-items: center;
     gap: 0.5rem;
     white-space: nowrap;
+    box-shadow: var(--foodly-shadow-sm);
 }
 
 .category-pill:hover, .category-pill.active {
     background: var(--foodly-primary);
-    color: #ffffff;
+    color: #111827;
     border-color: var(--foodly-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.25);
+    font-weight: 700;
 }
 
 /* -------------------------------------------------------------------------
-   Cart Drawer (<dialog>) - Adhering to modern-web-guidance
+   Cart Drawer (<dialog>)
    ------------------------------------------------------------------------- */
 dialog#cartDrawer {
     position: fixed;
@@ -439,7 +820,7 @@ dialog#cartDrawer[open] {
 }
 
 dialog#cartDrawer::backdrop {
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(15, 23, 42, 0.45);
     backdrop-filter: blur(2px);
     overflow: hidden;
     overscroll-behavior: contain;
@@ -496,7 +877,7 @@ dialog#cartDrawer::backdrop {
 .drawer-item-img {
     width: 60px;
     height: 60px;
-    border-radius: 10px;
+    border-radius: 12px;
     object-fit: cover;
     flex-shrink: 0;
 }
@@ -548,256 +929,114 @@ dialog#cartDrawer::backdrop {
     color: var(--foodly-dark);
 }
 
-.drawer-qty-btn:hover {
-    background: var(--foodly-primary);
-    color: #ffffff;
-}
-
 .drawer-qty-val {
-    font-size: 0.85rem;
     font-weight: 700;
+    font-size: 0.85rem;
     min-width: 18px;
     text-align: center;
 }
 
 .drawer-footer {
     padding: 1.25rem 1.5rem;
+    background: #fafaf9;
     border-top: 1px solid var(--foodly-border);
-    background: #fdfbf7;
 }
 
 .drawer-bill-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.4rem;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--foodly-dark-muted);
+    margin-bottom: 0.4rem;
 }
 
 .drawer-bill-total {
     display: flex;
     justify-content: space-between;
-    margin: 0.75rem 0 1rem 0;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--foodly-border);
     font-size: 1.15rem;
     font-weight: 800;
     color: var(--foodly-dark);
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--foodly-border);
+    margin: 0.5rem 0 1rem 0;
 }
 
 .btn-foodly-checkout {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 1rem;
-    border: none;
-    border-radius: 12px;
-    width: 100%;
-    padding: 0.85rem 1rem;
-    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
-    transition: all 0.2s ease;
-    text-decoration: none;
     display: block;
+    width: 100%;
+    background: var(--foodly-primary);
+    color: #111827;
     text-align: center;
+    padding: 0.75rem 1rem;
+    border-radius: 9999px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.35);
 }
 
 .btn-foodly-checkout:hover {
-    background: linear-gradient(135deg, #d97706, #b45309);
-    color: #ffffff;
+    background: var(--foodly-primary-hover);
+    color: #111827;
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45);
+    box-shadow: 0 6px 16px rgba(224, 150, 18, 0.45);
 }
 
 /* -------------------------------------------------------------------------
-   Admin Orders Dashboard & Auto-Refresh Ticker
+   Toast Notification for Add-to-Cart
    ------------------------------------------------------------------------- */
-.admin-card {
-    background: #ffffff;
-    border-radius: var(--foodly-radius);
-    border: 1px solid var(--foodly-border);
-    box-shadow: var(--foodly-shadow-sm);
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.admin-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--foodly-border);
-    margin-bottom: 1.5rem;
-}
-
-.admin-ticker-badge {
-    background: #ecfdf5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
-    border-radius: 30px;
-    padding: 0.4rem 0.95rem;
-    font-size: 0.82rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.admin-ticker-dot {
-    width: 8px;
-    height: 8px;
-    background: #10b981;
-    border-radius: 50%;
-    animation: pulseDot 2s infinite;
-}
-
-@keyframes pulseDot {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-}
-
-.admin-tabs {
-    display: flex;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--foodly-border);
-    padding-bottom: 0.5rem;
-}
-
-.admin-tab-btn {
-    background: none;
-    border: none;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: var(--foodly-dark-muted);
-    padding: 0.6rem 1.25rem;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.2s ease;
-}
-
-.admin-tab-btn:hover {
-    color: var(--foodly-dark);
-    background-color: #f1f5f9;
-}
-
-.admin-tab-btn.active {
+.foodly-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #111827;
     color: #ffffff;
-    background-color: var(--foodly-primary);
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
-}
-
-.admin-tab-btn .badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 20px;
-}
-
-.admin-order-table {
-    width: 100%;
-    vertical-align: middle;
-}
-
-.admin-order-table th {
-    background: #f8fafc;
-    color: #475569;
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 0.9rem 1rem;
-    border-bottom: 2px solid var(--foodly-border);
-}
-
-.admin-order-table td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--foodly-border);
+    padding: 0.75rem 1.25rem;
+    border-radius: 9999px;
     font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 1100;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.badge-status {
-    padding: 0.35rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: inline-block;
+.foodly-toast.show {
+    transform: translateY(0);
+    opacity: 1;
 }
 
-.badge-status.pending {
-    background: #fef3c7;
-    color: #92400e;
-    border: 1px solid #fde68a;
-}
-
-.badge-status.accepted {
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
-
-.badge-status.rejected {
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}
-
-.btn-admin-accept {
-    background: #16a34a;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.45rem 0.9rem;
-    font-weight: 700;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-admin-accept:hover {
-    background: #15803d;
-    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
-}
-
-.btn-admin-reject {
-    background: #dc2626;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.45rem 0.9rem;
-    font-weight: 700;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-admin-reject:hover {
-    background: #b91c1c;
-    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+.foodly-toast i {
+    color: var(--foodly-primary);
 }
 
 /* -------------------------------------------------------------------------
-   Footer
+   Footer Styling (Foodly Kitchen Reference Style)
    ------------------------------------------------------------------------- */
 .foodly-footer {
-    background: #ffffff;
+    background: #faf7f2;
     border-top: 1px solid var(--foodly-border);
-    padding: 3rem 0 1.5rem 0;
+    padding: 4rem 0 2rem 0;
     margin-top: auto;
+}
+
+.foodly-footer-logo {
+    height: 42px;
+    width: auto;
+    max-width: 175px;
+    display: block;
 }
 
 .foodly-footer h6 {
     font-weight: 800;
     font-size: 0.95rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.15rem;
     color: var(--foodly-dark);
+    letter-spacing: -0.2px;
 }
 
 .foodly-footer-link {
@@ -805,10 +1044,55 @@ dialog#cartDrawer::backdrop {
     text-decoration: none;
     font-size: 0.88rem;
     display: block;
-    margin-bottom: 0.5rem;
-    transition: color 0.2s ease;
+    margin-bottom: 0.55rem;
+    transition: color 0.15s ease;
 }
 
 .foodly-footer-link:hover {
-    color: var(--foodly-primary-hover);
+    color: var(--foodly-primary-dark);
+}
+
+.foodly-social-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--foodly-border);
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--foodly-dark-muted);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: var(--foodly-shadow-sm);
+}
+
+.foodly-social-icon:hover {
+    background: var(--foodly-primary);
+    border-color: var(--foodly-primary);
+    color: #111827;
+    transform: translateY(-2px);
+}
+
+/* -------------------------------------------------------------------------
+   Admin Dashboard Specifics
+   ------------------------------------------------------------------------- */
+.admin-stat-card {
+    background: #ffffff;
+    border-radius: var(--foodly-radius);
+    border: 1px solid var(--foodly-border);
+    padding: 1.5rem;
+    box-shadow: var(--foodly-shadow-sm);
+}
+
+.admin-stat-val {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--foodly-dark);
+}
+
+.admin-stat-label {
+    font-size: 0.85rem;
+    color: var(--foodly-dark-muted);
+    font-weight: 600;
 }
