@@ -224,9 +224,18 @@
 
                                 <div class="foodly-card-footer">
                                     <div class="foodly-card-price">&#x20B9;@item.Price.ToString("N0")</div>
-                                    <button type="button" class="btn-circular-add" data-item-id="@item.ItemId" title="Add to Basket" aria-label="Add to Basket">
-                                        +
-                                    </button>
+                                    @if (!User.IsInRole("Admin"))
+                                    {
+                                        <button type="button" class="btn-circular-add" data-item-id="@item.ItemId" title="Add to Basket" aria-label="Add to Basket">
+                                            +
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("MenuItems", "Admin")" class="btn-circular-admin-edit" title="Manage Item in Admin Inventory" aria-label="Manage Item in Admin Inventory">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -283,9 +292,18 @@
                             </div>
                             <div class="foodly-card-footer">
                                 <div class="foodly-card-price">&#x20B9;@rec.Price.ToString("N0")</div>
-                                <button type="button" class="btn-circular-add" data-item-id="@rec.ItemId" title="Add to Basket" aria-label="Add to Basket">
-                                    +
-                                </button>
+                                @if (!User.IsInRole("Admin"))
+                                {
+                                    <button type="button" class="btn-circular-add" data-item-id="@rec.ItemId" title="Add to Basket" aria-label="Add to Basket">
+                                        +
+                                    </button>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("MenuItems", "Admin")" class="btn-circular-admin-edit" title="Manage Item in Admin Inventory" aria-label="Manage Item in Admin Inventory">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                }
                             </div>
                         </div>
                     </div>

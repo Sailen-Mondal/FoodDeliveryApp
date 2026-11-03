@@ -102,10 +102,20 @@
                     </button>
                 }
 
-                <!-- Primary Amber "Order Now" Pill Button -->
-                <a href="@Url.Action("Index", "Menu")" class="btn-foodly-order-now">
-                    <span>Order Now</span>
-                </a>
+                <!-- Primary Action Button: Order Now for Customers / Orders Queue for Admins -->
+                @if (!User.IsInRole("Admin"))
+                {
+                    <a href="@Url.Action("Index", "Menu")" class="btn-foodly-order-now">
+                        <span>Order Now</span>
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Orders", "Admin")" class="btn-foodly-admin-cta" title="Live Kitchen Orders Queue">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <span>Orders Queue</span>
+                    </a>
+                }
             </div>
         </div>
     </nav>

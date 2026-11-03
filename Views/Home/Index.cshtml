@@ -18,9 +18,18 @@
                 From fragrant Hyderabadi Dum Biryanis and rich butter paneer to artisan pizzas and crisp kathi rolls, relish your favorites hot at your door.
             </p>
             <div class="d-flex flex-wrap gap-3">
-                <a href="@Url.Action("Index", "Menu")" class="btn-foodly-order-now px-4 py-2" style="font-size: 1.05rem;">
-                    <i class="fa-solid fa-utensils me-2"></i> Explore Full Menu
-                </a>
+                @if (!User.IsInRole("Admin"))
+                {
+                    <a href="@Url.Action("Index", "Menu")" class="btn-foodly-order-now px-4 py-2" style="font-size: 1.05rem;">
+                        <i class="fa-solid fa-utensils me-2"></i> Explore Full Menu
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Orders", "Admin")" class="btn btn-dark text-warning rounded-pill px-4 py-2 font-weight-bold shadow-sm" style="font-size: 1.05rem;">
+                        <i class="fa-solid fa-clipboard-list me-2"></i> Kitchen Orders Queue
+                    </a>
+                }
                 <a href="#bestsellers" class="btn btn-outline-dark rounded-pill px-4 py-2 font-weight-bold" style="border-width: 2px;">
                     Today's Specials
                 </a>
@@ -101,9 +110,18 @@
                         </div>
                         <div class="foodly-card-footer">
                             <div class="foodly-card-price">&#x20B9;@item.Price.ToString("N0")</div>
-                            <button type="button" class="btn-circular-add" data-item-id="@item.ItemId" title="Add to Basket" aria-label="Add to Basket">
-                                +
-                            </button>
+                            @if (!User.IsInRole("Admin"))
+                            {
+                                <button type="button" class="btn-circular-add" data-item-id="@item.ItemId" title="Add to Basket" aria-label="Add to Basket">
+                                    +
+                                </button>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("MenuItems", "Admin")" class="btn-circular-admin-edit" title="Manage Item in Admin Inventory" aria-label="Manage Item in Admin Inventory">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
