@@ -3,70 +3,134 @@
     ViewBag.Title = "Create an Account";
 }
 
-<div class="row justify-content-center my-4">
-    <div class="col-lg-6 col-md-8">
-        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
-            <div class="text-center mb-4">
-                <a href="@Url.Action("Index", "Home")" class="d-inline-block mb-3">
-                    <img src="@Url.Content("~/Content/images/foodly-logo.svg")" alt="Foodly Kitchen" style="height: 52px; width: auto;" />
-                </a>
-                <h3 class="font-weight-bold">Join Foodly Kitchen</h3>
-                <p class="text-muted small">Sign up to enjoy hot express deliveries, track past orders, and save your addresses.</p>
+<div class="foodly-auth-wrapper">
+    <div class="foodly-auth-card" style="max-width: 1040px;">
+        <div class="row g-0">
+            <!-- Left Panel: Brand Experience -->
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="foodly-auth-visual" style="background-image: url('@Url.Content("~/Content/images/dishes/dish-2.jpg")');">
+                    <div>
+                        <div class="mb-3">
+                            <img src="@Url.Content("~/Content/images/foodly-logo-white.svg")" alt="Foodly Kitchen" style="height: 48px; width: auto;" />
+                        </div>
+                        <div class="auth-visual-badge mb-3">
+                            <i class="fa-solid fa-gift text-warning"></i>
+                            <span>Foodly Kitchen Membership</span>
+                        </div>
+                        <h2 class="auth-visual-title">Unlock Exclusive Regional Food Perks</h2>
+                        <p class="auth-visual-desc">
+                            Create your free account to save favorite delivery addresses, reorder dishes with one click, and track your ongoing food orders in real-time.
+                        </p>
+                    </div>
+
+                    <div class="auth-visual-perks">
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <span>Save home &amp; office delivery locations</span>
+                        </div>
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <span>Instant 1-click reorder of favorites</span>
+                        </div>
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                            <span>Live delivery stage tracking</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger py-2 small" })
-
-                <div class="mb-3">
-                    @Html.LabelFor(m => m.FullName, new { @class = "form-label font-weight-bold small text-secondary" })
-                    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control rounded-3", placeholder = "Enter your full name" })
-                    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger small" })
-                </div>
-
-                <div class="mb-3">
-                    @Html.LabelFor(m => m.Email, new { @class = "form-label font-weight-bold small text-secondary" })
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control rounded-3", type = "email", placeholder = "name@example.in" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        @Html.LabelFor(m => m.Password, new { @class = "form-label font-weight-bold small text-secondary" })
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control rounded-3", placeholder = "Min 6 characters" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+            <!-- Right Panel: Registration Form -->
+            <div class="col-lg-7">
+                <div class="foodly-auth-form-wrap" style="padding: 2.5rem 2.5rem;">
+                    <!-- Tab Switcher -->
+                    <div class="auth-tab-group">
+                        <a href="@Url.Action("Login", "Account")" class="auth-tab-btn">
+                            <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Sign In
+                        </a>
+                        <a href="@Url.Action("Register", "Account")" class="auth-tab-btn active">
+                            <i class="fa-solid fa-user-plus me-1"></i> Create Account
+                        </a>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label font-weight-bold small text-secondary" })
-                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control rounded-3", placeholder = "Repeat password" })
-                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger small" })
+
+                    <div class="mb-3">
+                        <h2 class="font-weight-bold m-0" style="font-size: 1.85rem; letter-spacing: -0.5px;">Join Foodly Kitchen</h2>
+                        <p class="text-muted small mt-1">Sign up in seconds to start ordering mouthwatering delicacies.</p>
+                    </div>
+
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form", id = "registerForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger py-2 small rounded-3" })
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.FullName, new { @class = "form-label font-weight-bold small text-dark" })
+                            <div class="auth-input-group">
+                                <span class="auth-input-icon"><i class="fa-solid fa-user"></i></span>
+                                @Html.TextBoxFor(m => m.FullName, new { @class = "auth-form-control", placeholder = "Enter your full name", autofocus = "autofocus" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Email, new { @class = "form-label font-weight-bold small text-dark" })
+                            <div class="auth-input-group">
+                                <span class="auth-input-icon"><i class="fa-solid fa-envelope"></i></span>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "auth-form-control", type = "email", placeholder = "name@example.in", autocomplete = "username" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Passwords (2 Columns) -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.Password, new { @class = "form-label font-weight-bold small text-dark" })
+                                <div class="auth-input-group">
+                                    <span class="auth-input-icon"><i class="fa-solid fa-lock"></i></span>
+                                    @Html.PasswordFor(m => m.Password, new { @class = "auth-form-control", id = "RegPasswordInput", placeholder = "Min 6 characters", autocomplete = "new-password" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small mt-1 d-block" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label font-weight-bold small text-dark" })
+                                <div class="auth-input-group">
+                                    <span class="auth-input-icon"><i class="fa-solid fa-shield-check"></i></span>
+                                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "auth-form-control", placeholder = "Repeat password", autocomplete = "new-password" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger small mt-1 d-block" })
+                            </div>
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.PhoneNumber, new { @class = "form-label font-weight-bold small text-dark" })
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 font-weight-bold text-muted" style="border-radius: 12px 0 0 12px;">+91</span>
+                                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", style = "border-radius: 0 12px 12px 0;", placeholder = "10-digit Indian mobile number" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-4">
+                            @Html.LabelFor(m => m.Address, new { @class = "form-label font-weight-bold small text-dark" })
+                            @Html.TextAreaFor(m => m.Address, new { @class = "form-control rounded-3", rows = "2", placeholder = "House/Flat number, Street, Landmark, City & PIN code" })
+                            @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-foodly-order-now w-100 justify-content-center py-2" style="font-size: 1rem;">
+                            Create My Account <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </button>
+                    }
+
+                    <div class="text-center mt-3 pt-3 border-top">
+                        <span class="text-muted small">Already have an account?</span>
+                        <a href="@Url.Action("Login", "Account")" class="text-warning font-weight-bold small ms-1 text-decoration-none">Sign In</a>
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    @Html.LabelFor(m => m.PhoneNumber, new { @class = "form-label font-weight-bold small text-secondary" })
-                    <div class="input-group">
-                        <span class="input-group-text bg-light">+91</span>
-                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control rounded-end-3", placeholder = "10-digit Indian mobile number" })
-                    </div>
-                    @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger small" })
-                </div>
-
-                <div class="mb-4">
-                    @Html.LabelFor(m => m.Address, new { @class = "form-label font-weight-bold small text-secondary" })
-                    @Html.TextAreaFor(m => m.Address, new { @class = "form-control rounded-3", rows = "2", placeholder = "House/Flat number, Street, Landmark, City & PIN code" })
-                    @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger small" })
-                </div>
-
-                <button type="submit" class="btn btn-warning text-white rounded-pill w-100 py-2 font-weight-bold shadow-sm">
-                    Create My Account
-                </button>
-            }
-
-            <div class="text-center mt-4 pt-3 border-top">
-                <span class="text-muted small">Already have an account?</span>
-                <a href="@Url.Action("Login", "Account")" class="text-warning font-weight-bold small ms-1">Sign In</a>
             </div>
         </div>
     </div>

@@ -3,51 +3,123 @@
     ViewBag.Title = "Administrator Sign In";
 }
 
-<div class="row justify-content-center my-4">
-    <div class="col-lg-5 col-md-7">
-        <div class="card border-0 shadow rounded-4 p-4 p-md-5 bg-white">
-            <div class="text-center mb-4">
-                <a href="@Url.Action("Index", "Home")" class="d-inline-block mb-3">
-                    <img src="@Url.Content("~/Content/images/foodly-logo.svg")" alt="Foodly Kitchen" style="height: 52px; width: auto;" />
-                </a>
-                <h3 class="font-weight-bold">Administrator Portal</h3>
-                <p class="text-muted small">Sign in to monitor real-time order requests, auto-rejections, and product availability.</p>
-                <div class="badge bg-warning text-dark px-3 py-2 rounded-pill small">
-                    <i class="fa-solid fa-key me-1"></i> Kitchen Staff &amp; Store Management Only
+<div class="foodly-auth-wrapper">
+    <div class="foodly-auth-card">
+        <div class="row g-0">
+            <!-- Left Panel: Kitchen Operations Visual -->
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="foodly-auth-visual" style="background-image: url('@Url.Content("~/Content/images/dishes/dish-3.jpg")');">
+                    <div>
+                        <div class="mb-3">
+                            <img src="@Url.Content("~/Content/images/foodly-logo-white.svg")" alt="Foodly Kitchen" style="height: 48px; width: auto;" />
+                        </div>
+                        <div class="auth-visual-badge mb-3">
+                            <i class="fa-solid fa-lock text-warning"></i>
+                            <span>Kitchen Dispatch Operations</span>
+                        </div>
+                        <h2 class="auth-visual-title">Command Center for Live Orders &amp; Delivery</h2>
+                        <p class="auth-visual-desc">
+                            Monitor incoming customer orders, manage 5-minute auto-rejection timeouts, update product pricing, and coordinate kitchen staff.
+                        </p>
+                    </div>
+
+                    <div class="auth-visual-perks">
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <span>5-Minute automatic timeout monitor</span>
+                        </div>
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-layer-group"></i></div>
+                            <span>Instant dish price &amp; availability toggle</span>
+                        </div>
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <span>Role-based cryptographic authentication</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            @using (Html.BeginForm("AdminLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                @Html.HiddenFor(m => m.ReturnUrl)
-                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger py-2 small" })
+            <!-- Right Panel: Admin Authentication Form -->
+            <div class="col-lg-7">
+                <div class="foodly-auth-form-wrap">
+                    <!-- Tab Switcher -->
+                    <div class="auth-tab-group">
+                        <a href="@Url.Action("Login", "Account")" class="auth-tab-btn">
+                            <i class="fa-solid fa-user me-1"></i> Customer Login
+                        </a>
+                        <a href="@Url.Action("AdminLogin", "Account")" class="auth-tab-btn active">
+                            <i class="fa-solid fa-lock me-1"></i> Admin Portal
+                        </a>
+                    </div>
 
-                <div class="mb-3">
-                    @Html.LabelFor(m => m.Email, new { @class = "form-label font-weight-bold small text-secondary" })
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control rounded-3", type = "email", placeholder = "admin@foodly.in", autofocus = "autofocus" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-warning text-dark font-weight-bold px-2 py-1 rounded-pill small">Staff Only</span>
+                        </div>
+                        <h2 class="font-weight-bold m-0" style="font-size: 1.85rem; letter-spacing: -0.5px;">Administrator Portal</h2>
+                        <p class="text-muted small mt-1">Sign in with authorized kitchen credentials to manage dispatch and inventory.</p>
+                    </div>
+
+                    <!-- 1-Click Demo Credentials Card -->
+                    <div class="demo-creds-card">
+                        <div class="demo-creds-info">
+                            <strong><i class="fa-solid fa-key text-warning me-1"></i> Demo Administrator Credentials:</strong><br />
+                            Email: <code class="text-dark font-weight-bold">admin@foodly.in</code> &bull; Password: <code class="text-dark font-weight-bold">AdminPassword@123</code>
+                        </div>
+                        <button type="button" class="demo-creds-btn" id="btnFillAdminDemo">
+                            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Fill Demo
+                        </button>
+                    </div>
+
+                    @using (Html.BeginForm("AdminLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form", id = "adminLoginForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.ReturnUrl)
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger py-2 small rounded-3" })
+
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Email, new { @class = "form-label font-weight-bold small text-dark" })
+                            <div class="auth-input-group">
+                                <span class="auth-input-icon"><i class="fa-solid fa-envelope"></i></span>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "auth-form-control", id = "AdminEmailInput", type = "email", placeholder = "admin@foodly.in", autofocus = "autofocus", autocomplete = "username" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Password, new { @class = "form-label font-weight-bold small text-dark" })
+                            <div class="auth-input-group">
+                                <span class="auth-input-icon"><i class="fa-solid fa-lock"></i></span>
+                                @Html.PasswordFor(m => m.Password, new { @class = "auth-form-control", id = "AdminPasswordInput", placeholder = "Enter admin password", autocomplete = "current-password" })
+                                <button type="button" class="auth-password-toggle" id="toggleAdminPasswordBtn" title="Toggle password visibility">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="form-check mb-4">
+                            @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input", id = "AdminRememberMeCheck" })
+                            <label class="form-check-label small text-muted" for="AdminRememberMeCheck">
+                                Keep administrative session active
+                            </label>
+                        </div>
+
+                        <!-- Primary Action Button -->
+                        <button type="submit" class="btn btn-dark w-100 py-2 rounded-pill font-weight-bold shadow-sm d-flex align-items-center justify-content-center gap-2" style="font-size: 1rem;">
+                            <i class="fa-solid fa-lock-open text-warning"></i> Access Order Dashboard
+                        </button>
+                    }
+
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <span class="text-muted small">Not an administrator?</span>
+                        <a href="@Url.Action("Login", "Account")" class="text-warning font-weight-bold small ms-1 text-decoration-none">Customer Sign In</a>
+                    </div>
                 </div>
-
-                <div class="mb-3">
-                    @Html.LabelFor(m => m.Password, new { @class = "form-label font-weight-bold small text-secondary" })
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control rounded-3", placeholder = "Enter admin password" })
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
-                </div>
-
-                <div class="form-check mb-4">
-                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
-                    @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label small text-muted" })
-                </div>
-
-                <button type="submit" class="btn btn-dark text-white rounded-pill w-100 py-2 font-weight-bold shadow-sm">
-                    <i class="fa-solid fa-lock-open me-2 text-warning"></i> Access Order Dashboard
-                </button>
-            }
-
-            <div class="text-center mt-4 pt-3 border-top">
-                <span class="text-muted small">Not an administrator?</span>
-                <a href="@Url.Action("Login", "Account")" class="text-warning font-weight-bold small ms-1">Customer Sign In</a>
             </div>
         </div>
     </div>
@@ -55,4 +127,27 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            // Auto-fill Demo credentials
+            $('#btnFillAdminDemo').on('click', function () {
+                $('#AdminEmailInput').val('admin@foodly.in');
+                $('#AdminPasswordInput').val('AdminPassword@123');
+                FoodlyCart.showToast('Demo admin credentials filled!');
+            });
+
+            // Toggle password visibility
+            $('#toggleAdminPasswordBtn').on('click', function () {
+                var pwd = $('#AdminPasswordInput');
+                var icon = $(this).find('i');
+                if (pwd.attr('type') === 'password') {
+                    pwd.attr('type', 'text');
+                    icon.removeClass('fa-regular fa-eye').addClass('fa-regular fa-eye-slash');
+                } else {
+                    pwd.attr('type', 'password');
+                    icon.removeClass('fa-regular fa-eye-slash').addClass('fa-regular fa-eye');
+                }
+            });
+        });
+    </script>
 }

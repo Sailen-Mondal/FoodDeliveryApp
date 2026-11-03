@@ -3,56 +3,123 @@
     ViewBag.Title = "Customer Sign In";
 }
 
-<div class="row justify-content-center my-4">
-    <div class="col-lg-5 col-md-7">
-        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
-            <div class="text-center mb-4">
-                <a href="@Url.Action("Index", "Home")" class="d-inline-block mb-3">
-                    <img src="@Url.Content("~/Content/images/foodly-logo.svg")" alt="Foodly Kitchen" style="height: 52px; width: auto;" />
-                </a>
-                <h3 class="font-weight-bold">Welcome Back</h3>
-                <p class="text-muted small">Sign in to order your favorite dishes or check your ongoing deliveries.</p>
-            </div>
-
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                @Html.HiddenFor(m => m.ReturnUrl)
-                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger py-2 small" })
-
-                <div class="mb-3">
-                    @Html.LabelFor(m => m.Email, new { @class = "form-label font-weight-bold small text-secondary" })
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control rounded-3", type = "email", placeholder = "name@example.in", autofocus = "autofocus" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
-                </div>
-
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between">
-                        @Html.LabelFor(m => m.Password, new { @class = "form-label font-weight-bold small text-secondary" })
+<div class="foodly-auth-wrapper">
+    <div class="foodly-auth-card">
+        <div class="row g-0">
+            <!-- Left Panel: Gourmet Visual Experience -->
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="foodly-auth-visual" style="background-image: url('@Url.Content("~/Content/images/dishes/dish-1.jpg")');">
+                    <div>
+                        <div class="mb-3">
+                            <img src="@Url.Content("~/Content/images/foodly-logo-white.svg")" alt="Foodly Kitchen" style="height: 48px; width: auto;" />
+                        </div>
+                        <div class="auth-visual-badge mb-3">
+                            <i class="fa-solid fa-sparkles text-warning"></i>
+                            <span>Authentic Gourmet Kitchen</span>
+                        </div>
+                        <h2 class="auth-visual-title">Savor Delicious Meals Hot At Your Door</h2>
+                        <p class="auth-visual-desc">
+                            From royal slow-cooked biryanis and velvety paneer to artisan pizzas and wraps, indulge in flavors crafted with passion.
+                        </p>
                     </div>
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control rounded-3", placeholder = "Enter your password" })
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+
+                    <div class="auth-visual-perks">
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-bolt"></i></div>
+                            <span>Express 30-minute kitchen dispatch</span>
+                        </div>
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-shield-heart"></i></div>
+                            <span>FSSAI certified hygiene standards</span>
+                        </div>
+                        <div class="auth-perk-item">
+                            <div class="auth-perk-icon"><i class="fa-solid fa-star"></i></div>
+                            <span>4.9+ rating loved by 5,000+ foodies</span>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-check mb-4">
-                    @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
-                    @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label small text-muted" })
-                </div>
-
-                <button type="submit" class="btn btn-warning text-white rounded-pill w-100 py-2 font-weight-bold shadow-sm">
-                    Sign In
-                </button>
-            }
-
-            <div class="text-center mt-4 pt-3 border-top">
-                <span class="text-muted small">New to Foodly Kitchen?</span>
-                <a href="@Url.Action("Register", "Account")" class="text-warning font-weight-bold small ms-1">Create an Account</a>
             </div>
 
-            <div class="text-center mt-2">
-                <a href="@Url.Action("AdminLogin", "Account")" class="text-secondary small">
-                    <i class="fa-solid fa-lock me-1"></i> Admin Portal Sign In
-                </a>
+            <!-- Right Panel: Authentication Form -->
+            <div class="col-lg-7">
+                <div class="foodly-auth-form-wrap">
+                    <!-- Tab Switcher -->
+                    <div class="auth-tab-group">
+                        <a href="@Url.Action("Login", "Account")" class="auth-tab-btn active">
+                            <i class="fa-solid fa-user me-1"></i> Customer Login
+                        </a>
+                        <a href="@Url.Action("AdminLogin", "Account")" class="auth-tab-btn">
+                            <i class="fa-solid fa-lock me-1"></i> Admin Portal
+                        </a>
+                    </div>
+
+                    <div class="mb-3">
+                        <h2 class="font-weight-bold m-0" style="font-size: 1.85rem; letter-spacing: -0.5px;">Welcome Back!</h2>
+                        <p class="text-muted small mt-1">Sign in to order your favorite dishes or check your ongoing deliveries.</p>
+                    </div>
+
+                    <!-- 1-Click Demo Credentials Card -->
+                    <div class="demo-creds-card">
+                        <div class="demo-creds-info">
+                            <strong><i class="fa-solid fa-circle-info text-warning me-1"></i> Demo Customer Credentials:</strong><br />
+                            Email: <code class="text-dark font-weight-bold">rahul@example.in</code> &bull; Password: <code class="text-dark font-weight-bold">Password@123</code>
+                        </div>
+                        <button type="button" class="demo-creds-btn" id="btnFillCustomerDemo">
+                            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Fill Demo
+                        </button>
+                    </div>
+
+                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form", id = "customerLoginForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.ReturnUrl)
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger py-2 small rounded-3" })
+
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Email, new { @class = "form-label font-weight-bold small text-dark" })
+                            <div class="auth-input-group">
+                                <span class="auth-input-icon"><i class="fa-solid fa-envelope"></i></span>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "auth-form-control", id = "EmailInput", type = "email", placeholder = "name@example.in", autofocus = "autofocus", autocomplete = "username" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                @Html.LabelFor(m => m.Password, new { @class = "form-label font-weight-bold small text-dark m-0" })
+                                <a href="#" class="text-muted small text-decoration-none">Forgot password?</a>
+                            </div>
+                            <div class="auth-input-group">
+                                <span class="auth-input-icon"><i class="fa-solid fa-lock"></i></span>
+                                @Html.PasswordFor(m => m.Password, new { @class = "auth-form-control", id = "PasswordInput", placeholder = "Enter your password", autocomplete = "current-password" })
+                                <button type="button" class="auth-password-toggle" id="togglePasswordBtn" title="Toggle password visibility">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="form-check mb-4">
+                            @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input", id = "RememberMeCheck" })
+                            <label class="form-check-label small text-muted" for="RememberMeCheck">
+                                Keep me signed in on this browser
+                            </label>
+                        </div>
+
+                        <!-- Primary Action Button -->
+                        <button type="submit" class="btn-foodly-order-now w-100 justify-content-center py-2" style="font-size: 1rem;">
+                            Sign In to Foodly Kitchen <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </button>
+                    }
+
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <span class="text-muted small">New to Foodly Kitchen?</span>
+                        <a href="@Url.Action("Register", "Account")" class="text-warning font-weight-bold small ms-1 text-decoration-none">Create an Account</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -60,4 +127,27 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            // Auto-fill Demo credentials
+            $('#btnFillCustomerDemo').on('click', function () {
+                $('#EmailInput').val('rahul@example.in');
+                $('#PasswordInput').val('Password@123');
+                FoodlyCart.showToast('Demo customer credentials filled!');
+            });
+
+            // Toggle password visibility
+            $('#togglePasswordBtn').on('click', function () {
+                var pwd = $('#PasswordInput');
+                var icon = $(this).find('i');
+                if (pwd.attr('type') === 'password') {
+                    pwd.attr('type', 'text');
+                    icon.removeClass('fa-regular fa-eye').addClass('fa-regular fa-eye-slash');
+                } else {
+                    pwd.attr('type', 'password');
+                    icon.removeClass('fa-regular fa-eye-slash').addClass('fa-regular fa-eye');
+                }
+            });
+        });
+    </script>
 }
