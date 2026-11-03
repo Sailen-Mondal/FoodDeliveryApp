@@ -1,0 +1,54 @@
+# =========================================================================================
+# Author:          Sailen Mondal
+# Create Date:     2026-11-03
+# Description:     Continuous Integration & Continuous Deployment workflow building and deploying
+#                  Foodly Kitchen (.NET Framework 4.8 / ASP.NET MVC 5) to Azure App Service (Windows).
+# -----------------------------------------------------------------------------------------
+# Revision History:
+# Date         Author          Description
+# ----------   -------------   ------------------------------------------------------------
+# 2026-11-03   Sailen Mondal   Initial creation.
+# =========================================================================================
+
+name: Deploy Foodly Kitchen to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: 'foodly-kitchen'
+  BUILD_CONFIGURATION: 'Release'
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    name: Build & Deploy (.NET Framework 4.8 / Windows)
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup NuGet CLI
+        uses: nuget/setup-nuget@v2
+        with:
+          nuget-version: 'latest'
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet Packages
+        run: nuget restore FoodDeliveryApp.csproj -SolutionDirectory .
+
+      - name: Build & Package Web Application
+        run: |
+          msbuild FoodDeliveryApp.csproj /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="${{ github.workspace }}\publish\FoodDeliveryApp.zip"
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME || env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: '${{ github.workspace }}\publish\FoodDeliveryApp.zip'

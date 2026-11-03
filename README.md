@@ -254,6 +254,31 @@ Alternatively, build via CLI:
 
 ---
 
+## Cloud Deployment (Azure App Service & GitHub Actions)
+
+Foodly Kitchen includes an automated **GitHub Actions CI/CD pipeline** (`.github/workflows/azure-deploy.yml`) pre-configured for **Azure App Service (Windows / .NET Framework 4.8)**:
+
+### 1. Provision Azure Resources
+1. In the **Azure Portal**, create an **App Service**:
+   - **Publish**: Code
+   - **Runtime stack**: .NET Framework 4.8
+   - **Operating System**: Windows
+   - **Pricing Plan**: Free F1 (or Basic/Standard)
+2. Create an **Azure SQL Database** (Free Tier / Serverless) and execute the 5 database migration scripts in `Database/`.
+3. In your App Service under **Settings > Configuration > Connection strings**, add:
+   - **Name**: `FoodDeliveryDb`
+   - **Value**: `Server=tcp:<your-server>.database.windows.net,1433;Initial Catalog=FoodDeliveryDb;User ID=<admin>;Password=<password>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;`
+   - **Type**: `SQLServer`
+
+### 2. Configure GitHub Actions Deployment
+1. On your App Service overview page, click **Download publish profile**.
+2. In your GitHub repository, go to **Settings > Secrets and variables > Actions > New repository secret**.
+3. Name the secret `AZURE_WEBAPP_PUBLISH_PROFILE` and paste the XML contents of the downloaded publish profile.
+4. (Optional) Set the repository variable `AZURE_WEBAPP_NAME` to your App Service name if different from `foodly-kitchen`.
+5. Pushing commits to the `main` branch will automatically compile, package, and deploy the application to your live Azure domain.
+
+---
+
 ## Pre-configured Demo Credentials
 
 | Role | Email | Password | Access Level |
