@@ -1,11 +1,11 @@
-# 🍽️ Foodly Kitchen — Enterprise Food Delivery & Kitchen Operations Platform
+# Foodly Kitchen — Enterprise Food Delivery & Kitchen Operations Platform
 
 [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-7.3-239120?logo=csharp&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/csharp/)
 [![ASP.NET MVC](https://img.shields.io/badge/ASP.NET%20MVC-5.2.9-0078D7?logo=microsoft&logoColor=white)](https://dotnet.microsoft.com/apps/aspnet/mvc)
 [![Microsoft SQL Server](https://img.shields.io/badge/SQL%20Server-2019%20%2F%202022-CC292B?logo=microsoftsqlserver&logoColor=white)](https://www.microsoft.com/sql-server)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.2.3-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
-[![Security Hardened](https://img.shields.io/badge/Security-Defense--In--Depth-10B981?logo=shield&logoColor=white)](#security-architecture)
+[![Security Hardened](https://img.shields.io/badge/Security-Defense--In--Depth-10B981?logo=shield&logoColor=white)](#security-architecture--defense-in-depth)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Author](https://img.shields.io/badge/Author-Sailen%20Mondal-orange.svg)](#author--credits)
 
@@ -13,22 +13,22 @@
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
-- [Architectural Overview](#-architectural-overview)
-- [Key Features](#-key-features)
-- [Security Architecture & Defense-in-Depth](#-security-architecture--defense-in-depth)
-- [Technology Stack](#-technology-stack)
-- [Database Architecture & Stored Procedures](#-database-architecture--stored-procedures)
-- [Project Directory Structure](#-project-directory-structure)
-- [Getting Started & Local Setup](#-getting-started--local-setup)
-- [Pre-configured Demo Credentials](#-pre-configured-demo-credentials)
-- [Author & Credits](#-author--credits)
-- [License](#-license)
+- [Architectural Overview](#architectural-overview)
+- [Key Features](#key-features)
+- [Security Architecture & Defense-in-Depth](#security-architecture--defense-in-depth)
+- [Technology Stack](#technology-stack)
+- [Database Architecture & Stored Procedures](#database-architecture--stored-procedures)
+- [Project Directory Structure](#project-directory-structure)
+- [Getting Started & Local Setup](#getting-started--local-setup)
+- [Pre-configured Demo Credentials](#pre-configured-demo-credentials)
+- [Author & Credits](#author--credits)
+- [License](#license)
 
 ---
 
-## 🏛️ Architectural Overview
+## Architectural Overview
 
 Foodly Kitchen follows a decoupled **N-Tier Clean Architecture** with strict Separation of Concerns (SoC) and single-direction dependency flows:
 
@@ -71,18 +71,18 @@ graph TD
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🍲 Customer Experience & Living Culinary Showcase
+### Customer Experience & Dynamic Showcase
 - **Dynamic Culinary Stage**: Organic rising steam plumes generated using compositor-accelerated SVG curves (`transform: translate3d(...) scale(...)` and `opacity`) at 60fps with zero layout reflow.
 - **Interactive Dish Switcher**: Seamless cross-fading tab selector showcasing signature dishes (**Hyderabadi Dum Biryani**, **Artisan Pepperoni Pizza**, and **Paneer Butter Masala Combo**).
 - **Aroma & Dispatch Telemetry**: Real-time kitchen dispatch badges and floating aroma cards that reflow into a clean, docked flex strip on mobile screens (`< 768px`).
 - **Full Menu Browsing & Filtering**: Filter by category, vegetarian dietary preference, search keywords, and price ranges with instant sorting (Popular, Price: Low-to-High, Price: High-to-Low, Rating).
-- **Session-Backed Shopping Cart**: Asynchronous AJAX cart interactions with automatic doorstep delivery fee calculation (free delivery on orders > ₹500).
+- **Session-Backed Shopping Cart**: Asynchronous AJAX cart interactions with automatic doorstep delivery fee calculation (free delivery on orders > INR 500).
 - **Multi-Method Checkout**: Support for **UPI Apps** (GPay, PhonePe, Paytm, CRED, Custom VPA), **Credit/Debit Cards** (Visa, Mastercard, RuPay), **NetBanking** (HDFC, ICICI, SBI, Axis, Kotak), and **Cash on Delivery (COD)**.
 - **Personal Order History**: Real-time tracking of current and past culinary journeys with live status badges (`Pending`, `Accepted`, `Rejected`) and itemized receipts.
 
-### 👨‍🍳 Kitchen & Restaurant Operations (Admin Portal)
+### Kitchen & Restaurant Operations (Admin Portal)
 - **Live 60-Second Order Queue**: Partitioned tabbed dashboard (`Pending`, `Accepted`, `Rejected`) with live countdown timers and instant action buttons.
 - **5-Minute Auto-Rejection Engine**: SARGable T-SQL stored procedure logic automatically transitioning unconfirmed pending orders older than 5 minutes to `Rejected` status.
 - **Menu Catalog & Inventory Controls**: Real-time toggling of item availability (`Available` vs `Out of Stock`) and instant pricing updates with server-side validation.
@@ -90,7 +90,7 @@ graph TD
 
 ---
 
-## 🛡️ Security Architecture & Defense-in-Depth
+## Security Architecture & Defense-in-Depth
 
 The codebase has undergone a comprehensive defensive security audit and implements rigorous protection mechanisms:
 
@@ -100,7 +100,7 @@ The codebase has undergone a comprehensive defensive security audit and implemen
 | **100% Stored Procedures** | Direct inline/ad-hoc SQL queries are strictly prohibited across the entire solution. All SQL queries execute via compiled stored procedures with strongly typed `SqlParameter` objects, eliminating SQL injection. |
 | **Zero Dynamic SQL** | Zero stored procedures use `EXEC(@sql)` or `sp_executesql` with dynamic concatenation; all execution plans are precompiled and SARGable. |
 | **Server-Authoritative Pricing** | Cart item prices submitted by clients are completely discarded. `OrderService.PlaceOrderAsync` queries `dbo.MenuItems` directly to compute subtotals, delivery fees, and grand totals on the server. |
-| **PCI-DSS Compliance** | Zero raw credit card numbers, CVVs, or expiration dates are persisted. Only masked audit references (e.g., `Visa ending in •••• 4242`) and payment transaction IDs are stored. |
+| **PCI-DSS Compliance** | Zero raw credit card numbers, CVVs, or expiration dates are persisted. Only masked audit references (e.g., `Visa ending in **** 4242`) and payment transaction IDs are stored. |
 | **Sliding Window IP Rate Limiting** | Reverse-proxy-aware `[RateLimit]` action filter throttles brute-force attempts on `/Account/Login` (6/min), `/Account/AdminLogin` (5/min), and `/Account/Register` (5/min) with **HTTP 429 Too Many Requests**. |
 | **Idempotency & Double-Charge Protection** | Each checkout generates a unique `IdempotencyToken` enforced by a database unique filtered index `UQ_Orders_IdempotencyKey`. Concurrent submissions return the existing order safely. |
 | **Cryptographic PBKDF2 Password Hashing** | Passwords hashed using PBKDF2 (`Rfc2898DeriveBytes`) with 10,000 iterations and a cryptographically secure 128-bit per-user salt generated via `RNGCryptoServiceProvider`. |
@@ -108,7 +108,7 @@ The codebase has undergone a comprehensive defensive security audit and implemen
 
 ---
 
-## 💻 Technology Stack
+## Technology Stack
 
 | Layer | Technology |
 | :--- | :--- |
@@ -124,7 +124,7 @@ The codebase has undergone a comprehensive defensive security audit and implemen
 
 ---
 
-## 🗄️ Database Architecture & Stored Procedures
+## Database Architecture & Stored Procedures
 
 The database `FoodDeliveryDb` consists of 5 normalized relational tables and 15 compiled stored procedures:
 
@@ -156,7 +156,7 @@ The database `FoodDeliveryDb` consists of 5 normalized relational tables and 15 
 
 ---
 
-## 📁 Project Directory Structure
+## Project Directory Structure
 
 ```text
 FoodDeliveryApp/
@@ -205,7 +205,7 @@ FoodDeliveryApp/
 
 ---
 
-## 🚀 Getting Started & Local Setup
+## Getting Started & Local Setup
 
 ### Prerequisites
 - **Windows 10 / 11** or **Windows Server**
@@ -254,7 +254,7 @@ Alternatively, build via CLI:
 
 ---
 
-## 🔑 Pre-configured Demo Credentials
+## Pre-configured Demo Credentials
 
 | Role | Email | Password | Access Level |
 | :--- | :--- | :--- | :--- |
@@ -265,7 +265,7 @@ Alternatively, build via CLI:
 
 ---
 
-## 👨‍💻 Author & Credits
+## Author & Credits
 
 - **Author**: **Sailen Mondal**
 - **Role**: Software Engineer & Solutions Architect
@@ -273,6 +273,6 @@ Alternatively, build via CLI:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
