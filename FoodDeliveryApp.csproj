@@ -209,6 +209,9 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Content\foodly.css" />
+    <Content Include="Content\images\foodly-logo.svg" />
+    <Content Include="Content\images\foodly-logo-white.svg" />
+    <Content Include="Content\images\foodly-icon.svg" />
     <Content Include="Views\Account\AdminLogin.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />

@@ -62,10 +62,26 @@ main {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-weight: 800;
-    font-size: 1.35rem;
-    color: var(--foodly-dark);
     text-decoration: none;
+}
+
+.foodly-nav-logo {
+    height: 42px;
+    width: auto;
+    max-width: 175px;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.foodly-nav-logo:hover {
+    transform: scale(1.02);
+}
+
+.foodly-footer-logo {
+    height: 38px;
+    width: auto;
+    max-width: 160px;
+    display: block;
 }
 
 .foodly-brand-icon {

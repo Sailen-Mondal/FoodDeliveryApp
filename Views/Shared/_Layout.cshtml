@@ -12,11 +12,8 @@
     <!-- Foodly Sticky Top Navbar -->
     <nav class="foodly-navbar">
         <div class="container d-flex align-items-center justify-content-between">
-            <a href="@Url.Action("Index", "Home")" class="foodly-brand">
-                <div class="foodly-brand-icon">
-                    <i class="fa-solid fa-utensils"></i>
-                </div>
-                <span>Food<span class="accent">ly</span></span>
+            <a href="@Url.Action("Index", "Home")" class="foodly-brand" title="Foodly Kitchen">
+                <img src="@Url.Content("~/Content/images/foodly-logo.svg")" alt="Foodly Kitchen Logo" class="foodly-nav-logo" />
             </a>
 
             <div class="d-none d-md-flex align-items-center gap-2">
@@ -158,11 +155,8 @@
         <div class="container">
             <div class="row g-4 mb-4">
                 <div class="col-lg-4 col-md-6">
-                    <div class="foodly-brand mb-2">
-                        <div class="foodly-brand-icon">
-                            <i class="fa-solid fa-utensils"></i>
-                        </div>
-                        <span>Food<span class="accent">ly</span> Kitchen</span>
+                    <div class="mb-3">
+                        <img src="@Url.Content("~/Content/images/foodly-logo-white.svg")" alt="Foodly Kitchen" class="foodly-footer-logo" />
                     </div>
                     <p class="text-muted small">
                         Serving mouthwatering Indian biryanis, gravies, hand-crafted pizzas, and sizzling street delicacies straight to your doorstep across India.

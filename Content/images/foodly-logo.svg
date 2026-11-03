@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 95" width="100%" height="100%">
+  <defs>
+    <!-- Brand Gradients & Filters for Depth & Crisp Rendering -->
+    <linearGradient id="foodlyOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B00"/>
+      <stop offset="100%" stop-color="#E64A00"/>
+    </linearGradient>
+    <linearGradient id="foodlyRed" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#B91C1C"/>
+      <stop offset="100%" stop-color="#991B1B"/>
+    </linearGradient>
+  </defs>
+
+  <g id="brand-mark">
+    <!-- Top Accent Bar (Right of Pan) -->
+    <line x1="124" y1="26" x2="176" y2="26" stroke="url(#foodlyOrange)" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Steam Swirls above the Pan -->
+    <path d="M 88 15 C 86 11, 88 7, 92 4 C 95 1, 92 0, 91 1 C 87 4, 85 9, 88 15 Z" fill="#FF6B00"/>
+    <path d="M 98 14 C 97 10, 100 6, 104 3 C 107 0, 104 0, 103 1 C 99 4, 96 8, 98 14 Z" fill="#FF6B00"/>
+    <path d="M 80 16 C 79 13, 81 10, 84 8 C 87 6, 85 5, 84 6 C 81 8, 78 11, 80 16 Z" fill="#FF7D1A"/>
+
+    <!-- Cooking Wok / Sauté Pan Body -->
+    <!-- Gently tilted wok with smooth curves and professional thickness -->
+    <path d="M 72 23 
+             C 74 34, 88 41, 106 37 
+             C 114 35, 119 30, 121 24 
+             C 118 25, 108 26, 96 25 
+             C 84 24, 76 23, 72 23 Z" 
+          fill="url(#foodlyOrange)"/>
+
+    <!-- Wok Rim & Left Handle Detail -->
+    <path d="M 68 21 C 70 21, 72 22, 73 24 C 71 24, 69 23, 67 22 C 67 21, 67 21, 68 21 Z" fill="#E64A00"/>
+    <path d="M 72 23 C 84 24, 104 25, 121 24 C 120 22.5, 106 23.5, 96 23.5 C 84 23.5, 74 22.5, 72 23 Z" fill="#FF7D1A" opacity="0.8"/>
+
+    <!-- Inside the pan: Crossed Fork & Spoon in Crisp White -->
+    <!-- Spoon on the left -->
+    <g transform="rotate(18, 88, 30)">
+      <!-- Spoon Bowl -->
+      <ellipse cx="86" cy="27.5" rx="3.5" ry="4.5" fill="#FFFFFF"/>
+      <!-- Spoon Handle -->
+      <path d="M 85.2 31.5 L 83.5 37 L 85 37.5 L 86.8 32 Z" fill="#FFFFFF"/>
+    </g>
+
+    <!-- Fork on the right -->
+    <g transform="rotate(-20, 102, 30)">
+      <!-- Fork Head / Base -->
+      <path d="M 99.5 29 C 99.5 31, 103.5 31, 103.5 29 Z" fill="#FFFFFF"/>
+      <!-- Fork 3 Tines -->
+      <line x1="100" y1="29" x2="100" y2="25" stroke="#FFFFFF" stroke-width="0.9" stroke-linecap="round"/>
+      <line x1="101.5" y1="29" x2="101.5" y2="24.5" stroke="#FFFFFF" stroke-width="0.9" stroke-linecap="round"/>
+      <line x1="103" y1="29" x2="103" y2="25" stroke="#FFFFFF" stroke-width="0.9" stroke-linecap="round"/>
+      <!-- Fork Handle -->
+      <path d="M 101 30.5 L 99.5 37 L 101 37.5 L 102.5 31 Z" fill="#FFFFFF"/>
+    </g>
+  </g>
+
+  <!-- Typography: Foodly -->
+  <g id="brand-text">
+    <text x="56" y="67" 
+          font-family="'Playfair Display', 'Georgia', 'Times New Roman', serif" 
+          font-size="44" 
+          font-weight="900" 
+          letter-spacing="-0.02em" 
+          fill="url(#foodlyRed)">
+      Foodly
+    </text>
+  </g>
+
+  <!-- Bottom Details: Orange Accent Line & KITCHEN Subtitle -->
+  <g id="brand-subtitle">
+    <!-- Bottom Accent Line (Left of KITCHEN) -->
+    <line x1="56" y1="81" x2="94" y2="81" stroke="url(#foodlyOrange)" stroke-width="4.5" stroke-linecap="round"/>
+
+    <!-- "KITCHEN" text: Clean, tracked uppercase geometric sans-serif -->
+    <text x="101" y="85" 
+          font-family="'Montserrat', 'Inter', 'Segoe UI', system-ui, sans-serif" 
+          font-size="14.5" 
+          font-weight="800" 
+          letter-spacing="0.18em" 
+          fill="#111827">
+      KITCHEN
+    </text>
+  </g>
+</svg>

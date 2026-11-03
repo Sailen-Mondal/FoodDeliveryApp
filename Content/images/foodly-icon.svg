@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="iconOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B00"/>
+      <stop offset="100%" stop-color="#E64A00"/>
+    </linearGradient>
+    <filter id="subtleDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Circular background badge for app icon / favicon -->
+  <rect width="100" height="100" rx="24" fill="#FFFFFF"/>
+  <rect width="94" height="94" x="3" y="3" rx="21" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1.5"/>
+
+  <g transform="translate(4, 8) scale(0.92)" filter="url(#subtleDrop)">
+    <!-- Steam Swirls -->
+    <path d="M 44 22 C 41 15, 44 9, 50 4 C 54 0, 50 -1, 49 1 C 43 5, 40 12, 44 22 Z" fill="#FF6B00"/>
+    <path d="M 57 21 C 55 14, 60 8, 66 3 C 70 -1, 67 -1, 65 1 C 59 5, 54 11, 57 21 Z" fill="#FF6B00"/>
+    <path d="M 33 24 C 32 19, 35 14, 40 11 C 44 8, 41 7, 40 8 C 36 11, 32 16, 33 24 Z" fill="#FF8A33"/>
+
+    <!-- Cooking Wok / Sauté Pan -->
+    <path d="M 22 34 
+             C 25 51, 45 61, 68 56 
+             C 79 53, 86 46, 89 36 
+             C 85 37, 72 38, 56 37 
+             C 38 35, 27 34, 22 34 Z" 
+          fill="url(#iconOrange)"/>
+
+    <!-- Wok Handle -->
+    <path d="M 17 31 C 20 31, 23 32.5, 24 35.5 C 21 35.5, 18 34, 15 32.5 Z" fill="#C2410C"/>
+    <path d="M 22 34 C 38 35, 66 37, 89 36 C 87 34, 69 35, 56 35 C 38 35, 24 33.5, 22 34 Z" fill="#FF8A33" opacity="0.9"/>
+
+    <!-- Inside Cutlery in Pure White -->
+    <!-- Spoon on Left -->
+    <g transform="rotate(18, 44, 44)">
+      <ellipse cx="42" cy="40" rx="4.5" ry="6" fill="#FFFFFF"/>
+      <path d="M 41 45.5 L 39 53.5 L 41 54.5 L 43 46 Z" fill="#FFFFFF"/>
+    </g>
+
+    <!-- Fork on Right -->
+    <g transform="rotate(-20, 62, 44)">
+      <path d="M 59 42 C 59 45, 65 45, 65 42 Z" fill="#FFFFFF"/>
+      <line x1="60" y1="42" x2="60" y2="36" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="62" y1="42" x2="62" y2="35.5" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="64" y1="42" x2="64" y2="36" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M 61 44.5 L 59 53.5 L 61 54.5 L 63 45 Z" fill="#FFFFFF"/>
+    </g>
+  </g>
+</svg>
