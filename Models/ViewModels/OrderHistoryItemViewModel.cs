@@ -7,6 +7,7 @@
 // Date         Author          Description
 // ----------   -------------   ------------------------------------------------------------
 // 2026-11-03   Sailen Mondal   Initial creation.
+// 2026-11-03   Sailen Mondal   Added PaymentStatus, PaymentTransactionId, and MaskedPaymentDetails.
 // =========================================================================================
 
 using System;
@@ -37,6 +38,21 @@ namespace FoodDeliveryApp.Models.ViewModels
         /// Payment method snapshot.
         /// </summary>
         public string PaymentMethod { get; set; }
+
+        /// <summary>
+        /// Payment lifecycle status: 'Paid', 'Pending', or 'Failed'.
+        /// </summary>
+        public string PaymentStatus { get; set; } = "Pending";
+
+        /// <summary>
+        /// Payment transaction reference identifier.
+        /// </summary>
+        public string PaymentTransactionId { get; set; }
+
+        /// <summary>
+        /// Masked payment receipt details.
+        /// </summary>
+        public string MaskedPaymentDetails { get; set; }
 
         /// <summary>
         /// Total order payable amount in Indian Rupees (₹).

@@ -7,8 +7,10 @@
 // Date         Author          Description
 // ----------   -------------   ------------------------------------------------------------
 // 2026-11-03   Sailen Mondal   Initial creation.
+// 2026-11-03   Sailen Mondal   Added multi-method payment fields (UPI, Card, NetBanking, COD) and IdempotencyToken.
 // =========================================================================================
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -37,11 +39,56 @@ namespace FoodDeliveryApp.Models.ViewModels
         public string ContactPhone { get; set; }
 
         /// <summary>
-        /// Payment method selected: 'Cash on Delivery' or 'UPI on Delivery'.
+        /// Selected payment category: 'UPI', 'Card', 'NetBanking', or 'COD'.
         /// </summary>
         [Required(ErrorMessage = "Please select a payment method.")]
         [Display(Name = "Payment Method")]
-        public string PaymentMethod { get; set; } = "Cash on Delivery";
+        public string PaymentMethod { get; set; } = "UPI";
+
+        /// <summary>
+        /// Selected UPI App or sub-channel: 'GPay', 'PhonePe', 'Paytm', 'CRED', 'QR', or 'VPA'.
+        /// </summary>
+        public string UpiApp { get; set; } = "GPay";
+
+        /// <summary>
+        /// Virtual Payment Address for UPI manual entry (e.g. name@okhdfcbank).
+        /// </summary>
+        public string UpiVpa { get; set; }
+
+        /// <summary>
+        /// Cardholder name as printed on card.
+        /// </summary>
+        public string CardHolderName { get; set; }
+
+        /// <summary>
+        /// Card number input (sanitized on server, only last 4 kept for receipt, never persisted raw).
+        /// </summary>
+        public string CardNumber { get; set; }
+
+        /// <summary>
+        /// Card expiration date (MM/YY).
+        /// </summary>
+        public string CardExpiry { get; set; }
+
+        /// <summary>
+        /// Card CVV / security code (used strictly for transaction authorization, NEVER stored).
+        /// </summary>
+        public string CardCvv { get; set; }
+
+        /// <summary>
+        /// Card brand detected dynamically (e.g., Visa, Mastercard, RuPay).
+        /// </summary>
+        public string CardNetwork { get; set; } = "Visa";
+
+        /// <summary>
+        /// Selected Indian bank for NetBanking (e.g. HDFC, ICICI, SBI, Axis, Kotak).
+        /// </summary>
+        public string SelectedBank { get; set; } = "HDFC Bank";
+
+        /// <summary>
+        /// Client-side generated idempotency token ensuring duplicate clicks cannot produce duplicate orders.
+        /// </summary>
+        public string IdempotencyToken { get; set; } = Guid.NewGuid().ToString("N");
 
         /// <summary>
         /// Items currently in the cart.

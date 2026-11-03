@@ -10,6 +10,7 @@
 // 2026-11-03   Sailen Mondal   Added parameterless constructor for DefaultControllerActivator.
 // =========================================================================================
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,6 +69,9 @@ namespace FoodDeliveryApp.Controllers
                 return Json(new { success = false, message = "Invalid item or quantity." });
             }
 
+            // Input Validation: Enforce defensive upper bounds on cart item quantity
+            int safeQuantity = Math.Min(quantity, 50);
+
             var menuItem = await _menuService.GetMenuItemByIdAsync(itemId);
             if (menuItem == null || !menuItem.IsAvailable)
             {
@@ -78,7 +82,7 @@ namespace FoodDeliveryApp.Controllers
             var existing = cart.FirstOrDefault(i => i.ItemId == itemId);
             if (existing != null)
             {
-                existing.Quantity += quantity;
+                existing.Quantity = Math.Min(existing.Quantity + safeQuantity, 50);
             }
             else
             {
@@ -87,7 +91,7 @@ namespace FoodDeliveryApp.Controllers
                     ItemId = menuItem.ItemId,
                     Name = menuItem.Name,
                     Price = menuItem.Price,
-                    Quantity = quantity,
+                    Quantity = safeQuantity,
                     ImageUrl = menuItem.ImageUrl,
                     IsVeg = menuItem.IsVeg
                 });
@@ -122,7 +126,14 @@ namespace FoodDeliveryApp.Controllers
                 return Json(new { success = false, message = "Item not found in cart." });
             }
 
-            item.Quantity += delta;
+            // Input Validation: Clamp delta to safe single step bounds
+            int safeDelta = Math.Max(-10, Math.Min(delta, 10));
+            item.Quantity += safeDelta;
+            if (item.Quantity > 50)
+            {
+                item.Quantity = 50;
+            }
+
             if (item.Quantity <= 0)
             {
                 cart.Remove(item);

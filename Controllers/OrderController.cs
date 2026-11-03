@@ -9,6 +9,7 @@
 // ----------   -------------   ------------------------------------------------------------
 // 2026-11-03   Sailen Mondal   Initial creation.
 // 2026-11-03   Sailen Mondal   Added parameterless constructor for DefaultControllerActivator.
+// 2026-11-03   Sailen Mondal   Upgraded Checkout and Confirmation with payment details and idempotency token.
 // =========================================================================================
 
 using System;
@@ -17,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using FoodDeliveryApp.Data.Repositories;
+using FoodDeliveryApp.Infrastructure.Filters;
 using FoodDeliveryApp.Models.ViewModels;
 using FoodDeliveryApp.Services;
 
@@ -72,7 +74,10 @@ namespace FoodDeliveryApp.Controllers
             {
                 DeliveryAddress = user?.Address ?? string.Empty,
                 ContactPhone = user?.PhoneNumber ?? string.Empty,
-                PaymentMethod = "Cash on Delivery",
+                PaymentMethod = "UPI",
+                UpiApp = "GPay",
+                SelectedBank = "HDFC Bank",
+                IdempotencyToken = Guid.NewGuid().ToString("N"),
                 Items = cart
             };
 
@@ -82,6 +87,7 @@ namespace FoodDeliveryApp.Controllers
         // POST: /Order/PlaceOrder
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RateLimit(Seconds = 60, MaxRequests = 10, Message = "Order request limit reached. Please wait a moment before trying again.")]
         public async Task<ActionResult> PlaceOrder(OrderPlacementViewModel model)
         {
             var cart = GetCart();
@@ -128,10 +134,31 @@ namespace FoodDeliveryApp.Controllers
 
         // GET: /Order/Confirmation/5
         [HttpGet]
-        public ActionResult Confirmation(int id)
+        public async Task<ActionResult> Confirmation(int id)
         {
-            ViewBag.OrderId = id;
-            return View();
+            if (id <= 0)
+            {
+                return RedirectToAction("History");
+            }
+
+            var user = await _userRepository.GetByEmailAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Anti-IDOR Authorization Check: User must own the order or be an Administrator
+            bool isAdmin = User.IsInRole("Admin");
+            var order = await _orderService.GetOrderByIdForUserAsync(id, user.UserId, isAdmin);
+
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = "Order not found or you are not authorized to access this order.";
+                return RedirectToAction("History");
+            }
+
+            ViewBag.OrderId = order.OrderId;
+            return View(order);
         }
 
         // GET: /Order/History

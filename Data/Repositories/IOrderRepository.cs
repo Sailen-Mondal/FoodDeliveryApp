@@ -7,6 +7,7 @@
 // Date         Author          Description
 // ----------   -------------   ------------------------------------------------------------
 // 2026-11-03   Sailen Mondal   Initial creation.
+// 2026-11-03   Sailen Mondal   Added paymentStatus, paymentTransactionId, maskedPaymentDetails, idempotencyKey to CreateOrderAsync.
 // =========================================================================================
 
 using System.Collections.Generic;
@@ -27,15 +28,23 @@ namespace FoodDeliveryApp.Data.Repositories
         /// <param name="userId">Customer User ID.</param>
         /// <param name="deliveryAddress">Destination delivery address snapshot.</param>
         /// <param name="contactPhone">Contact phone snapshot.</param>
-        /// <param name="paymentMethod">Payment method.</param>
+        /// <param name="paymentMethod">Payment method selected.</param>
+        /// <param name="paymentStatus">Payment status ('Paid', 'Pending', or 'Failed').</param>
+        /// <param name="paymentTransactionId">Unique payment transaction reference identifier.</param>
+        /// <param name="maskedPaymentDetails">Masked card, UPI VPA, or bank details.</param>
+        /// <param name="idempotencyKey">Client idempotency token to prevent double submissions.</param>
         /// <param name="totalAmount">Total payable amount.</param>
         /// <param name="items">Collection of line items to serialize to XML.</param>
-        /// <returns>The generated OrderId.</returns>
+        /// <returns>The generated or existing OrderId.</returns>
         Task<int> CreateOrderAsync(
             int userId,
             string deliveryAddress,
             string contactPhone,
             string paymentMethod,
+            string paymentStatus,
+            string paymentTransactionId,
+            string maskedPaymentDetails,
+            string idempotencyKey,
             decimal totalAmount,
             List<CartItemViewModel> items);
 
@@ -66,5 +75,14 @@ namespace FoodDeliveryApp.Data.Repositories
         /// <param name="userId">Customer User ID.</param>
         /// <returns>List of order history view models.</returns>
         Task<List<OrderHistoryItemViewModel>> GetCustomerHistoryAsync(int userId);
+
+        /// <summary>
+        /// Retrieves a specific order by ID with strict row-level authorization check (Anti-IDOR).
+        /// </summary>
+        /// <param name="orderId">Order ID.</param>
+        /// <param name="userId">Requesting User ID.</param>
+        /// <param name="isAdmin">Whether requesting user possesses the Admin role.</param>
+        /// <returns>Matching order view model or null if not authorized/not found.</returns>
+        Task<OrderHistoryItemViewModel> GetOrderByIdAsync(int orderId, int userId, bool isAdmin);
     }
 }

@@ -191,7 +191,17 @@
                                     <div class="small text-muted text-break">
                                         <i class="fa-solid fa-location-dot me-1 text-secondary"></i> @ord.DeliveryAddress
                                     </div>
-                                    <span class="badge bg-light text-dark border small mt-1">@ord.PaymentMethod</span>
+                                    <div class="d-flex align-items-center gap-1 mt-1 flex-wrap">
+                                        <span class="badge bg-light text-dark border small">@ord.PaymentMethod</span>
+                                        @if (string.Equals(ord.PaymentStatus, "Paid", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge-payment-paid"><i class="fa-solid fa-circle-check"></i> Paid</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-payment-pending"><i class="fa-solid fa-clock"></i> Collect COD</span>
+                                        }
+                                    </div>
                                 </td>
                                 <td style="max-width: 300px;">
                                     <div class="small font-weight-bold text-dark">@ord.ItemsSummary</div>
@@ -280,7 +290,17 @@
                                 </td>
                                 <td style="max-width: 240px;">
                                     <div class="small text-muted text-break">@ord.DeliveryAddress</div>
-                                    <span class="badge bg-light text-dark border small mt-1">@ord.PaymentMethod</span>
+                                    <div class="d-flex align-items-center gap-1 mt-1 flex-wrap">
+                                        <span class="badge bg-light text-dark border small">@ord.PaymentMethod</span>
+                                        @if (string.Equals(ord.PaymentStatus, "Paid", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge-payment-paid"><i class="fa-solid fa-circle-check"></i> Paid</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-payment-pending"><i class="fa-solid fa-clock"></i> Collect COD</span>
+                                        }
+                                    </div>
                                 </td>
                                 <td style="max-width: 300px;">
                                     <div class="small font-weight-bold text-dark">@ord.ItemsSummary</div>

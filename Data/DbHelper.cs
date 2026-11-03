@@ -26,7 +26,9 @@ namespace FoodDeliveryApp.Data
     public static class DbHelper
     {
         private static readonly string ConnectionString =
-            ConfigurationManager.ConnectionStrings["FoodDeliveryDb"]?.ConnectionString
+            Environment.GetEnvironmentVariable("FOODLY_DB_CONNECTION")
+            ?? Environment.GetEnvironmentVariable("SQLCONNSTR_FoodDeliveryDb")
+            ?? ConfigurationManager.ConnectionStrings["FoodDeliveryDb"]?.ConnectionString
             ?? @"Data Source=.\SQLEXPRESS;Initial Catalog=FoodDeliveryDb;Integrated Security=True;TrustServerCertificate=True;";
 
         /// <summary>

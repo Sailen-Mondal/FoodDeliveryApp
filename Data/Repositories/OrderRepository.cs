@@ -7,6 +7,7 @@
 // Date         Author          Description
 // ----------   -------------   ------------------------------------------------------------
 // 2026-11-03   Sailen Mondal   Initial creation.
+// 2026-11-03   Sailen Mondal   Upgraded CreateOrderAsync with payment metadata and mapped payment fields.
 // =========================================================================================
 
 using System;
@@ -34,6 +35,10 @@ namespace FoodDeliveryApp.Data.Repositories
             string deliveryAddress,
             string contactPhone,
             string paymentMethod,
+            string paymentStatus,
+            string paymentTransactionId,
+            string maskedPaymentDetails,
+            string idempotencyKey,
             decimal totalAmount,
             List<CartItemViewModel> items)
         {
@@ -49,10 +54,13 @@ namespace FoodDeliveryApp.Data.Repositories
             var pUserId = new SqlParameter("@UserId", SqlDbType.Int) { Value = userId };
             var pAddress = new SqlParameter("@DeliveryAddress", SqlDbType.NVarChar, 300) { Value = deliveryAddress ?? string.Empty };
             var pPhone = new SqlParameter("@ContactPhone", SqlDbType.NVarChar, 20) { Value = contactPhone ?? string.Empty };
-            var pPayment = new SqlParameter("@PaymentMethod", SqlDbType.NVarChar, 50) { Value = paymentMethod ?? "Cash on Delivery" };
+            var pPaymentMethod = new SqlParameter("@PaymentMethod", SqlDbType.NVarChar, 50) { Value = paymentMethod ?? "Cash on Delivery" };
+            var pPaymentStatus = new SqlParameter("@PaymentStatus", SqlDbType.NVarChar, 20) { Value = paymentStatus ?? "Pending" };
+            var pTxnId = new SqlParameter("@PaymentTransactionId", SqlDbType.NVarChar, 100) { Value = (object)paymentTransactionId ?? DBNull.Value };
+            var pMasked = new SqlParameter("@MaskedPaymentDetails", SqlDbType.NVarChar, 100) { Value = (object)maskedPaymentDetails ?? DBNull.Value };
+            var pIdempotency = new SqlParameter("@IdempotencyKey", SqlDbType.NVarChar, 100) { Value = (object)idempotencyKey ?? DBNull.Value };
             var pTotal = new SqlParameter("@TotalAmount", SqlDbType.Decimal) { Precision = 10, Scale = 2, Value = totalAmount };
             var pXml = new SqlParameter("@OrderItemsXml", SqlDbType.Xml) { Value = xmlDoc.ToString() };
-            var pNewOrderId = new SqlParameter("@NewOrderId", SqlDbType.Int) { Direction = ParameterDirection.Output };
 
             using (var conn = await DbHelper.GetOpenConnectionAsync().ConfigureAwait(false))
             using (var cmd = new SqlCommand("dbo.usp_Order_Create", conn))
@@ -61,16 +69,18 @@ namespace FoodDeliveryApp.Data.Repositories
                 cmd.Parameters.Add(pUserId);
                 cmd.Parameters.Add(pAddress);
                 cmd.Parameters.Add(pPhone);
-                cmd.Parameters.Add(pPayment);
+                cmd.Parameters.Add(pPaymentMethod);
+                cmd.Parameters.Add(pPaymentStatus);
+                cmd.Parameters.Add(pTxnId);
+                cmd.Parameters.Add(pMasked);
+                cmd.Parameters.Add(pIdempotency);
                 cmd.Parameters.Add(pTotal);
                 cmd.Parameters.Add(pXml);
-                cmd.Parameters.Add(pNewOrderId);
 
-                await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-
-                if (pNewOrderId.Value != null && pNewOrderId.Value != DBNull.Value)
+                var scalarResult = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+                if (scalarResult != null && scalarResult != DBNull.Value)
                 {
-                    return Convert.ToInt32(pNewOrderId.Value);
+                    return Convert.ToInt32(scalarResult);
                 }
             }
 
@@ -93,6 +103,9 @@ namespace FoodDeliveryApp.Data.Repositories
                 ContactPhone = reader.GetString(reader.GetOrdinal("ContactPhone")),
                 DeliveryAddress = reader.GetString(reader.GetOrdinal("DeliveryAddress")),
                 PaymentMethod = reader.GetString(reader.GetOrdinal("PaymentMethod")),
+                PaymentStatus = reader.IsDBNull(reader.GetOrdinal("PaymentStatus")) ? "Pending" : reader.GetString(reader.GetOrdinal("PaymentStatus")),
+                PaymentTransactionId = reader.IsDBNull(reader.GetOrdinal("PaymentTransactionId")) ? null : reader.GetString(reader.GetOrdinal("PaymentTransactionId")),
+                MaskedPaymentDetails = reader.IsDBNull(reader.GetOrdinal("MaskedPaymentDetails")) ? null : reader.GetString(reader.GetOrdinal("MaskedPaymentDetails")),
                 TotalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount")),
                 Status = reader.GetString(reader.GetOrdinal("Status")),
                 PlacedAt = reader.GetDateTime(reader.GetOrdinal("PlacedAt")),
@@ -133,12 +146,43 @@ namespace FoodDeliveryApp.Data.Repositories
                 DeliveryAddress = reader.GetString(reader.GetOrdinal("DeliveryAddress")),
                 ContactPhone = reader.GetString(reader.GetOrdinal("ContactPhone")),
                 PaymentMethod = reader.GetString(reader.GetOrdinal("PaymentMethod")),
+                PaymentStatus = reader.IsDBNull(reader.GetOrdinal("PaymentStatus")) ? "Pending" : reader.GetString(reader.GetOrdinal("PaymentStatus")),
+                PaymentTransactionId = reader.IsDBNull(reader.GetOrdinal("PaymentTransactionId")) ? null : reader.GetString(reader.GetOrdinal("PaymentTransactionId")),
+                MaskedPaymentDetails = reader.IsDBNull(reader.GetOrdinal("MaskedPaymentDetails")) ? null : reader.GetString(reader.GetOrdinal("MaskedPaymentDetails")),
                 TotalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount")),
                 Status = reader.GetString(reader.GetOrdinal("Status")),
                 PlacedAt = reader.GetDateTime(reader.GetOrdinal("PlacedAt")),
                 UpdatedAt = reader.IsDBNull(reader.GetOrdinal("UpdatedAt")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
                 ItemsSummary = reader.IsDBNull(reader.GetOrdinal("ItemsSummary")) ? string.Empty : reader.GetString(reader.GetOrdinal("ItemsSummary"))
             }).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Retrieves order details by OrderId strictly enforcing authorization (Anti-IDOR) via dbo.usp_Order_GetById.
+        /// </summary>
+        public async Task<OrderHistoryItemViewModel> GetOrderByIdAsync(int orderId, int userId, bool isAdmin)
+        {
+            var pOrderId = new SqlParameter("@OrderId", SqlDbType.Int) { Value = orderId };
+            var pUserId = new SqlParameter("@UserId", SqlDbType.Int) { Value = userId };
+            var pIsAdmin = new SqlParameter("@IsAdmin", SqlDbType.Bit) { Value = isAdmin };
+
+            var list = await DbHelper.ExecuteReaderAsync("dbo.usp_Order_GetById", new[] { pOrderId, pUserId, pIsAdmin }, reader => new OrderHistoryItemViewModel
+            {
+                OrderId = reader.GetInt32(reader.GetOrdinal("OrderId")),
+                DeliveryAddress = reader.GetString(reader.GetOrdinal("DeliveryAddress")),
+                ContactPhone = reader.GetString(reader.GetOrdinal("ContactPhone")),
+                PaymentMethod = reader.GetString(reader.GetOrdinal("PaymentMethod")),
+                PaymentStatus = reader.IsDBNull(reader.GetOrdinal("PaymentStatus")) ? "Pending" : reader.GetString(reader.GetOrdinal("PaymentStatus")),
+                PaymentTransactionId = reader.IsDBNull(reader.GetOrdinal("PaymentTransactionId")) ? null : reader.GetString(reader.GetOrdinal("PaymentTransactionId")),
+                MaskedPaymentDetails = reader.IsDBNull(reader.GetOrdinal("MaskedPaymentDetails")) ? null : reader.GetString(reader.GetOrdinal("MaskedPaymentDetails")),
+                TotalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount")),
+                Status = reader.GetString(reader.GetOrdinal("Status")),
+                PlacedAt = reader.GetDateTime(reader.GetOrdinal("PlacedAt")),
+                UpdatedAt = reader.IsDBNull(reader.GetOrdinal("UpdatedAt")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
+                ItemsSummary = reader.IsDBNull(reader.GetOrdinal("ItemsSummary")) ? string.Empty : reader.GetString(reader.GetOrdinal("ItemsSummary"))
+            }).ConfigureAwait(false);
+
+            return list.FirstOrDefault();
         }
     }
 }

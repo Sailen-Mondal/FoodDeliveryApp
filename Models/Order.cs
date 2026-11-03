@@ -7,6 +7,7 @@
 // Date         Author          Description
 // ----------   -------------   ------------------------------------------------------------
 // 2026-11-03   Sailen Mondal   Initial creation.
+// 2026-11-03   Sailen Mondal   Added PaymentStatus, PaymentTransactionId, MaskedPaymentDetails, IdempotencyKey.
 // =========================================================================================
 
 using System;
@@ -50,9 +51,29 @@ namespace FoodDeliveryApp.Models
         public string ContactPhone { get; set; }
 
         /// <summary>
-        /// Payment method selected (e.g. Cash on Delivery, UPI on Delivery).
+        /// Payment method selected (e.g. UPI, Credit / Debit Card, NetBanking, Cash on Delivery).
         /// </summary>
         public string PaymentMethod { get; set; }
+
+        /// <summary>
+        /// Payment lifecycle status: 'Paid', 'Pending', or 'Failed'.
+        /// </summary>
+        public string PaymentStatus { get; set; } = "Pending";
+
+        /// <summary>
+        /// Secure transaction reference identifier (UPI Ref, Card Auth Code, or COD tracking ID).
+        /// </summary>
+        public string PaymentTransactionId { get; set; }
+
+        /// <summary>
+        /// Safe masked payment metadata for receipts (e.g., 'HDFC Bank - •••• 4242' or 'payuser@okhdfcbank').
+        /// </summary>
+        public string MaskedPaymentDetails { get; set; }
+
+        /// <summary>
+        /// Unique client-generated idempotency token preventing duplicate order submissions.
+        /// </summary>
+        public string IdempotencyKey { get; set; }
 
         /// <summary>
         /// Total order payable amount in Indian Rupees (₹).

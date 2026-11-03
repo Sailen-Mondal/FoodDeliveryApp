@@ -1,9 +1,52 @@
-# Visual Studio / .NET .gitignore
-.vs/
-bin/
-obj/
-*.user
+## ==============================================================================
+## Visual Studio & .NET .gitignore
+## Author: Sailen Mondal
+## ==============================================================================
+
+# User-specific files
+*.rsuser
 *.suo
+*.user
 *.userosscache
 *.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio files
+.vs/
+*.sln.ide/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
 packages/
+!packages/repositories.config
+
+# Test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Temporary / OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.tmp
+*.temp

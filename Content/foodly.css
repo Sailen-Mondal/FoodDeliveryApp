@@ -1715,3 +1715,850 @@ dialog#cartDrawer::backdrop {
     border-color: #1e293b;
     transform: scale(1.1);
 }
+
+/* =========================================================================
+   Executive Multi-Method Payment & Security System
+   Author: Sailen Mondal
+   ========================================================================= */
+
+/* Payment Navigation Tabs */
+.payment-tabs-container {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 1.5rem;
+}
+
+.payment-nav-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .payment-nav-tabs {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.payment-tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 0.5rem;
+    border-radius: 12px;
+    border: 1.5px solid transparent;
+    background: #ffffff;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.22s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    user-select: none;
+}
+
+.payment-tab-btn i {
+    font-size: 1.35rem;
+    margin-bottom: 0.35rem;
+    transition: transform 0.2s ease;
+}
+
+.payment-tab-btn:hover {
+    border-color: #cbd5e1;
+    color: #0f172a;
+    transform: translateY(-1px);
+}
+
+.payment-tab-btn.active {
+    background: #ffffff;
+    border-color: #f5a623;
+    color: #c07800;
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.18);
+}
+
+.payment-tab-btn.active i {
+    color: #f5a623;
+    transform: scale(1.15);
+}
+
+.payment-tab-pill {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 9999px;
+    background: #ecfdf5;
+    color: #059669;
+    margin-top: 0.25rem;
+    letter-spacing: 0.3px;
+}
+
+/* Payment Panel Bodies */
+.payment-panel {
+    display: none;
+    animation: paymentFadeIn 0.25s ease-out;
+}
+
+.payment-panel.active {
+    display: block;
+}
+
+@keyframes paymentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* UPI Method Panel */
+.upi-box-wrapper {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.upi-apps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 576px) {
+    .upi-apps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.upi-app-option {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.75rem 0.5rem;
+    background: #ffffff;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.upi-app-option:hover {
+    border-color: #94a3b8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.upi-app-option.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+}
+
+.upi-app-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    margin-bottom: 0.35rem;
+}
+
+.upi-app-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #1e293b;
+    display: block;
+}
+
+.upi-qr-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.25rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.upi-qr-frame {
+    position: relative;
+    padding: 12px;
+    background: #ffffff;
+    border: 2px dashed #f5a623;
+    border-radius: 14px;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.upi-qr-badge {
+    position: absolute;
+    top: -10px;
+    background: #1e293b;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    letter-spacing: 0.5px;
+}
+
+/* Interactive Card Preview */
+.credit-card-preview {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-radius: 18px;
+    padding: 1.5rem;
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.credit-card-preview::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 166, 35, 0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.card-chip {
+    width: 42px;
+    height: 32px;
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%);
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+    position: relative;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.card-preview-number {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.25rem;
+    letter-spacing: 2.5px;
+    margin-bottom: 1rem;
+    color: #f8fafc;
+}
+
+.card-preview-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.card-holder-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #e2e8f0;
+}
+
+.card-expiry-preview {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.card-brand-icon {
+    font-size: 2rem;
+    color: #f5a623;
+}
+
+/* NetBanking Bank Grid */
+.bank-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 576px) {
+    .bank-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.bank-option {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.85rem 0.65rem;
+    background: #ffffff;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.bank-option:hover {
+    border-color: #94a3b8;
+    transform: translateY(-2px);
+}
+
+.bank-option.selected {
+    border-color: #059669;
+    background: #ecfdf5;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.12);
+}
+
+.bank-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e293b;
+    display: block;
+}
+
+/* COD Trust Seal Card */
+.cod-security-box {
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.cod-seal-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #16a34a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* Security Trust Bar */
+.pci-security-bar {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    border-radius: 0 0 16px 16px;
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.security-badge-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.security-badge-item i {
+    color: #16a34a;
+}
+
+/* Payment Status Badges */
+.badge-payment-paid {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.badge-payment-pending {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.badge-payment-failed {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Demo Simulator Bar */
+.demo-pay-bar {
+    background: #f1f5f9;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+}
+
+.btn-demo-autofill {
+    background: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 0.35rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-demo-autofill:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+/* =========================================================================
+   The Sizzling Gourmet Culinary Stage & Rising Steam Engine
+   Author: Sailen Mondal
+   ========================================================================= */
+
+/* Hero Outer Stage Container */
+.culinary-stage-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1.5rem 0.5rem;
+}
+
+/* Warm Earthen Ambient Backlight Glow */
+.culinary-ambient-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 166, 35, 0.32) 0%, rgba(217, 119, 6, 0.16) 45%, transparent 70%);
+    filter: blur(28px);
+    pointer-events: none;
+    z-index: 1;
+    animation: ambientGlowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes ambientGlowPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.92);
+        opacity: 0.75;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.08);
+        opacity: 1;
+    }
+}
+
+/* Platter Stage Wrapper */
+.culinary-platter-stage {
+    position: relative;
+    width: 100%;
+    max-width: 370px;
+    height: 330px;
+    border-radius: 28px;
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(30, 41, 59, 0.18), 0 0 0 4px rgba(255, 255, 255, 0.95);
+    overflow: visible; /* Permissive overflow allows natural rising steam and ambient plumes */
+    z-index: 5;
+}
+
+/* Individual Dish Images */
+.culinary-dish-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 24px;
+    opacity: 0;
+    transform: scale(0.95) translate3d(0, 10px, 0);
+    transition: opacity 0.45s ease-out, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+.culinary-dish-img.active {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+    pointer-events: auto;
+}
+
+/* -------------------------------------------------------------------------
+   Rising Steam Particle Engine (Compositor-Accelerated SVG Vapor Paths)
+   ------------------------------------------------------------------------- */
+.steam-emitter {
+    position: absolute;
+    top: -85px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 180px;
+    pointer-events: none;
+    z-index: 12;
+    overflow: visible;
+}
+
+.steam-plume {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.92);
+    stroke-linecap: round;
+    filter: blur(3px) drop-shadow(0 2px 8px rgba(180, 83, 9, 0.22)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.9));
+    transform-origin: bottom center;
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: steamRise 3.2s ease-out infinite;
+}
+
+/* Individual Plume Variations (Staggered Delays & Paths) */
+.steam-plume-1 {
+    stroke-width: 9;
+    animation-delay: 0s;
+    --sway: -12px;
+}
+
+.steam-plume-2 {
+    stroke-width: 11;
+    animation-delay: 0.8s;
+    --sway: 15px;
+}
+
+.steam-plume-3 {
+    stroke-width: 8;
+    animation-delay: 1.6s;
+    --sway: -9px;
+}
+
+.steam-plume-4 {
+    stroke-width: 10;
+    animation-delay: 2.4s;
+    --sway: 13px;
+}
+
+@keyframes steamRise {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 25px, 0) scale(0.65);
+    }
+    16% {
+        opacity: 0.88;
+    }
+    60% {
+        opacity: 0.55;
+        transform: translate3d(var(--sway, 8px), -50px, 0) scale(1.3);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(calc(var(--sway, 8px) * 1.65), -115px, 0) scale(1.85);
+    }
+}
+
+/* Dish-Aware Steam Intensity Profiles */
+.culinary-stage-container[data-dish="pizza"] .steam-emitter {
+    top: -45px;
+}
+
+.culinary-stage-container[data-dish="pizza"] .steam-plume {
+    stroke: rgba(255, 255, 255, 0.65);
+    animation-duration: 4.2s;
+}
+
+.culinary-stage-container[data-dish="paneer"] .steam-emitter {
+    top: -55px;
+}
+
+/* -------------------------------------------------------------------------
+   Floating Aroma Badges (Living Micro-Interactions)
+   ------------------------------------------------------------------------- */
+.floating-aroma-badge {
+    position: absolute;
+    z-index: 15;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1.5px solid rgba(245, 166, 35, 0.4);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    user-select: none;
+    will-change: transform;
+}
+
+/* Desktop Badge Positions with Orbital Float Keyframes */
+.badge-hot-dum {
+    top: -8px;
+    right: -15px;
+    animation: floatBadge1 4.5s ease-in-out infinite alternate;
+}
+
+.badge-speed-dispatch {
+    top: 25px;
+    left: -25px;
+    animation: floatBadge2 5.2s ease-in-out infinite alternate;
+}
+
+.badge-social-proof {
+    bottom: -10px;
+    left: -12px;
+    animation: floatBadge3 4.8s ease-in-out infinite alternate;
+}
+
+@keyframes floatBadge1 {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, -9px, 0); }
+}
+
+@keyframes floatBadge2 {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, 8px, 0); }
+}
+
+@keyframes floatBadge3 {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(0, -7px, 0); }
+}
+
+/* -------------------------------------------------------------------------
+   Mobile Responsive Rules (< 768px): Dock badges into clean flex row
+   ------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+    .floating-aroma-badge {
+        position: static !important;
+        transform: none !important;
+        animation: none !important;
+        margin: 0.25rem 0;
+        font-size: 0.72rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .mobile-aroma-dock {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        width: 100%;
+        z-index: 10;
+    }
+
+    .culinary-platter-stage {
+        max-width: 320px;
+        height: 280px;
+    }
+
+    .culinary-ambient-glow {
+        width: 290px;
+        height: 290px;
+    }
+}
+
+@media (min-width: 768px) {
+    .mobile-aroma-dock {
+        display: contents;
+    }
+}
+
+/* -------------------------------------------------------------------------
+   Interactive Dish Selector Chips (role="tablist")
+   ------------------------------------------------------------------------- */
+.culinary-dish-tabs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    z-index: 12;
+}
+
+.dish-tab-chip {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.45rem 1rem;
+    border-radius: 9999px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.22s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    touch-action: manipulation;
+}
+
+.dish-tab-chip:hover {
+    border-color: #f5a623;
+    color: #0f172a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.15);
+}
+
+.dish-tab-chip.active {
+    border-color: #f5a623;
+    background: #fffbeb;
+    color: #b45309;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(245, 166, 35, 0.25);
+    transform: scale(1.02);
+}
+
+.dish-tab-chip i {
+    font-size: 0.95rem;
+}
+
+.dish-tab-chip.active i {
+    color: #f5a623;
+}
+
+/* -------------------------------------------------------------------------
+   Live Kitchen Dispatch Telemetry Bar (Left Column)
+   ------------------------------------------------------------------------- */
+.kitchen-telemetry-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ffffff;
+    border: 1.5px solid rgba(22, 163, 74, 0.35);
+    border-radius: 9999px;
+    padding: 0.38rem 0.9rem;
+    margin-bottom: 1.15rem;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.08);
+}
+
+.kitchen-pulse-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #16a34a;
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+    animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 8px rgba(22, 163, 74, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+    }
+}
+
+.kitchen-telemetry-text {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #15803d;
+    letter-spacing: 0.2px;
+}
+
+.kitchen-telemetry-meta {
+    font-size: 0.76rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* -------------------------------------------------------------------------
+   Accessibility: Motion Control & Reduced Motion (Modern Web Guidance)
+   ------------------------------------------------------------------------- */
+.btn-hero-motion-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    padding: 0.28rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+.btn-hero-motion-toggle:hover {
+    background: #ffffff;
+    border-color: #94a3b8;
+    color: #1e293b;
+}
+
+/* Offscreen & Manual Pause States (GPU & Battery Economics) */
+.is-hero-offscreen .steam-plume,
+.is-hero-offscreen .floating-aroma-badge,
+.is-hero-offscreen .culinary-ambient-glow,
+.is-hero-offscreen .kitchen-pulse-dot,
+[data-motion="paused"] .steam-plume,
+[data-motion="paused"] .floating-aroma-badge,
+[data-motion="paused"] .culinary-ambient-glow,
+[data-motion="paused"] .kitchen-pulse-dot {
+    animation-play-state: paused !important;
+}
+
+/* Prefers-Reduced-Motion Media Query */
+@media (prefers-reduced-motion: reduce) {
+    .steam-plume,
+    .floating-aroma-badge,
+    .culinary-ambient-glow,
+    .kitchen-pulse-dot,
+    .culinary-dish-img {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .steam-plume {
+        opacity: 0.25 !important;
+        transform: translateY(-20px) !important;
+    }
+
+    .floating-aroma-badge {
+        transform: none !important;
+    }
+}

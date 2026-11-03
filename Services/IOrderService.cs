@@ -55,5 +55,14 @@ namespace FoodDeliveryApp.Services
         /// <param name="userId">Customer User ID.</param>
         /// <returns>List of past order summaries.</returns>
         Task<List<OrderHistoryItemViewModel>> GetCustomerOrderHistoryAsync(int userId);
+
+        /// <summary>
+        /// Retrieves order details by ID strictly validating that the requesting user owns the order or is Admin (Anti-IDOR).
+        /// </summary>
+        /// <param name="orderId">Order ID.</param>
+        /// <param name="userId">Requesting User ID.</param>
+        /// <param name="isAdmin">Whether caller has Admin privileges.</param>
+        /// <returns>Order details or null if unauthorized/not found.</returns>
+        Task<OrderHistoryItemViewModel> GetOrderByIdForUserAsync(int orderId, int userId, bool isAdmin);
     }
 }

@@ -14,6 +14,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using FoodDeliveryApp.Infrastructure.Filters;
 using FoodDeliveryApp.Models;
 using FoodDeliveryApp.Models.ViewModels;
 using FoodDeliveryApp.Services;
@@ -59,6 +60,7 @@ namespace FoodDeliveryApp.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [RateLimit(Seconds = 60, MaxRequests = 5, Message = "Too many registration attempts. Please wait 60 seconds before trying again.")]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -102,6 +104,7 @@ namespace FoodDeliveryApp.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [RateLimit(Seconds = 60, MaxRequests = 6, Message = "Too many login attempts. For security reasons, please wait 60 seconds before trying again.")]
         public async Task<ActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -143,6 +146,7 @@ namespace FoodDeliveryApp.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [RateLimit(Seconds = 60, MaxRequests = 5, Message = "Too many administrator login attempts. For security reasons, please wait 60 seconds before trying again.")]
         public async Task<ActionResult> AdminLogin(LoginViewModel model)
         {
             if (!ModelState.IsValid)
