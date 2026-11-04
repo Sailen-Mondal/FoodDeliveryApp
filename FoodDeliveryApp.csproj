@@ -263,6 +263,13 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <None Include="packages.config" />
+    <None Include="Database\01_CreateDatabase.sql" />
+    <None Include="Database\02_StoredProcedures.sql" />
+    <None Include="Database\03_SeedData.sql" />
+    <None Include="Database\04_PaymentSchemaUpdate.sql" />
+    <None Include="Database\05_OrderGetByIdStoredProc.sql" />
+    <None Include="README.md" />
+    <None Include="LICENSE" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.esm.min.js.map" />
